@@ -31,7 +31,7 @@ import br.com.unionoffice.model.NotaFiscal;
 
 public class EmailPanel extends JPanel {
 	JLabel lbPara, lbCopia, lbCopiaOculta, lbAssunto;
-	JPanel pnDados, pnMensagem;
+	JPanel pnMensagem;
 	JButton btSelXml, btAddAnx, btRemAnex, btEnviar;
 	JTextField tfPara, tfCopia, tfCopiaOculta, tfAssunto;
 	NotaFiscal nota;
@@ -118,7 +118,6 @@ public class EmailPanel extends JPanel {
 		// taMsg
 		tpMsg = new JTextPane();
 		tpMsg.setContentType("text/html");
-		
 
 		// spMsg
 		spMsg = new JScrollPane(tpMsg);
@@ -168,47 +167,39 @@ public class EmailPanel extends JPanel {
 		chkMantem.setSize(120, 25);
 
 		// pnDados
-		pnDados = new JPanel();
-		pnDados.setLayout(null);
-		pnDados.add(lbPara);
-		pnDados.add(tfPara);
-		pnDados.add(lbCopia);
-		pnDados.add(tfCopia);
-		pnDados.add(lbCopiaOculta);
-		pnDados.add(tfCopiaOculta);
-		pnDados.add(chkDeposito);
-		pnDados.add(btSelXml);
-		pnDados.add(lbAssunto);
-		pnDados.add(tfAssunto);
-		pnDados.add(pnMensagem);
-		pnDados.add(spAnexos);
-		pnDados.add(btAddAnx);
-		pnDados.add(btRemAnex);
-		pnDados.add(btEnviar);
-		pnDados.add(chkMantem);
-
-		// parâmetros do JFrame
-		//setContentPane(pnDados);
-		setSize(580, 695);
-		//setVisible(true);
-		//setLocationRelativeTo(null);
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//setResizable(false);
-		//setTitle("Envio de XML ao Cliente");
+		// pnDados = new JPanel();
+		setLayout(null);
+		add(lbPara);
+		add(tfPara);
+		add(lbCopia);
+		add(tfCopia);
+		add(lbCopiaOculta);
+		add(tfCopiaOculta);
+		add(chkDeposito);
+		add(btSelXml);
+		add(lbAssunto);
+		add(tfAssunto);
+		add(pnMensagem);
+		add(spAnexos);
+		add(btAddAnx);
+		add(btRemAnex);
+		add(btEnviar);
+		add(chkMantem);
 	}
 
 	private void definirEventos() {
 		btSelXml.addActionListener(acaoBtLer);
-		
-		chkDeposito.addActionListener(new ActionListener() {			
+
+		chkDeposito.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (nota != null) {
-					tpMsg.setText(Email.criaMensagem(nota, chkDeposito.isSelected()));
-				}				
+					tpMsg.setText(Email.criaMensagem(nota,
+							chkDeposito.isSelected()));
+				}
 			}
 		});
-		
+
 	}
 
 	private void atualizaAnexos() {
@@ -250,9 +241,9 @@ public class EmailPanel extends JPanel {
 						JOptionPane.INFORMATION_MESSAGE);
 			} else {
 				List<File> files = lstAnexos.getSelectedValuesList();
-				for(File arq : files){
-					anexos.remove(arq);	
-				}				
+				for (File arq : files) {
+					anexos.remove(arq);
+				}
 				atualizaAnexos();
 			}
 		}
@@ -271,7 +262,7 @@ public class EmailPanel extends JPanel {
 		tpMsg.setText(null);
 		nota = null;
 		anexos = new ArrayList<File>();
-		lstAnexos.setModel(new DefaultListModel<File>());		
+		lstAnexos.setModel(new DefaultListModel<File>());
 		if (!mantem) {
 			tfPara.setText(null);
 			tfCopia.setText(null);
@@ -288,32 +279,30 @@ public class EmailPanel extends JPanel {
 						"Informe o destinatário",
 						JOptionPane.INFORMATION_MESSAGE);
 				tfPara.requestFocus();
-			}else if (anexos.size() == 0){
+			} else if (anexos.size() == 0) {
 				JOptionPane.showMessageDialog(null,
 						"Selecione pelo menos um anexo para enviar.",
-						"Sem anexos",
-						JOptionPane.INFORMATION_MESSAGE);
-			}else{
-				email.setDestinatario(tfPara.getText().split(";"));
-				email.setCopias(tfCopia.getText().split(";"));
-				email.setCopiasOculas(tfCopiaOculta.getText().split(";"));
-				email.setAssunto(tfAssunto.getText());
-				email.setAnexos(anexos);
-				email.setMensagem(tpMsg.getText());
-				try {
-					email.enviar();
-					limparDados(chkMantem.isSelected());
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null,
-							"Erro ao enviar e-mail: "+e.getMessage(),
-							"Erro de envio",
-							JOptionPane.ERROR_MESSAGE);
-					try {
-						email = new Email();
-					} catch (EmailException e1) {
-						e1.printStackTrace();
-					}
-				}
+						"Sem anexos", JOptionPane.INFORMATION_MESSAGE);
+			} else {				
+				new Thread() {
+					public void run() {
+						try {
+							email.setDestinatario(tfPara.getText().split(";"));
+							email.setCopias(tfCopia.getText().split(";"));
+							email.setCopiasOculas(tfCopiaOculta.getText().split(";"));
+							email.setAssunto(tfAssunto.getText());
+							email.setAnexos(anexos);
+							email.setMensagem(tpMsg.getText());					
+							email.enviar();
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null,
+									"Erro ao enviar e-mail: " + e.getMessage(),
+									"Erro de envio", JOptionPane.ERROR_MESSAGE);
+						}
+
+					};
+				}.start();
+				limparDados(chkMantem.isSelected());
 			}
 		}
 	};
@@ -329,10 +318,10 @@ public class EmailPanel extends JPanel {
 					File arquivo = fcDialog.getSelectedFile();
 					nota = new NotaFiscal(arquivo);
 					tfAssunto.setText("Ref.: Nota Fiscal Eletronica - NF "
-							+ nota.getNumero().substring(4)
-							+ " - "
+							+ nota.getNumero().substring(4) + " - "
 							+ nota.getDestinatario());
-					tpMsg.setText(Email.criaMensagem(nota, chkDeposito.isSelected()));
+					tpMsg.setText(Email.criaMensagem(nota,
+							chkDeposito.isSelected()));
 					if (!anexos.contains(arquivo)) {
 						anexos.add(arquivo);
 					}

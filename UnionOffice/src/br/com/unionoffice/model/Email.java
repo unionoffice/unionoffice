@@ -11,7 +11,7 @@ public class Email {
 	private final String REMETENTE = "Faturamento - Union Office";
 	private final String USERNAME = "faturamento@unionoffice.com.br";
 	private final String PASSWORD = "faturamento321";
-	private final int PORTASMTP = 587;
+	private final int PORTASMTP = 58;
 	private final String HOSTNAME = "smtp.unionoffice.com.br";
 	// parâmetros da mensagem
 	private String[] destinatario;
