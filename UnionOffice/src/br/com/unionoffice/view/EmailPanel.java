@@ -26,7 +26,7 @@ import javax.swing.text.EditorKit;
 
 import org.apache.commons.mail.EmailException;
 
-import br.com.unionoffice.model.Email;
+import br.com.unionoffice.model.EmailNfe;
 import br.com.unionoffice.model.NotaFiscal;
 
 public class EmailPanel extends JPanel {
@@ -38,7 +38,7 @@ public class EmailPanel extends JPanel {
 	JTextPane tpMsg;
 	JScrollPane spMsg, spAnexos;
 	JList<File> lstAnexos;
-	Email email;
+	EmailNfe email;
 	List<File> anexos;
 	JCheckBox chkMantem, chkDeposito;
 	JFileChooser fcDialog;
@@ -48,7 +48,7 @@ public class EmailPanel extends JPanel {
 		definirEventos();
 		anexos = new ArrayList<File>();
 		try {
-			email = new Email();
+			email = new EmailNfe();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Erro: " + e.getMessage(),
 					"Erro ao criar objeto e-mail", JOptionPane.ERROR_MESSAGE);
@@ -194,7 +194,7 @@ public class EmailPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (nota != null) {
-					tpMsg.setText(Email.criaMensagem(nota,
+					tpMsg.setText(EmailNfe.criaMensagem(nota,
 							chkDeposito.isSelected()));
 				}
 			}
@@ -251,7 +251,7 @@ public class EmailPanel extends JPanel {
 
 	private void limparDados(boolean mantem) {
 		try {
-			email = new Email();
+			email = new EmailNfe();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Erro: " + e.getMessage(),
 					"Erro ao criar objeto e-mail", JOptionPane.ERROR_MESSAGE);
@@ -320,7 +320,7 @@ public class EmailPanel extends JPanel {
 					tfAssunto.setText("Ref.: Nota Fiscal Eletronica - NF "
 							+ nota.getNumero().substring(4) + " - "
 							+ nota.getDestinatario());
-					tpMsg.setText(Email.criaMensagem(nota,
+					tpMsg.setText(EmailNfe.criaMensagem(nota,
 							chkDeposito.isSelected()));
 					if (!anexos.contains(arquivo)) {
 						anexos.add(arquivo);

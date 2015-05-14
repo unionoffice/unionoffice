@@ -6,12 +6,12 @@ import java.util.List;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 
-public class Email {
+public class EmailNfe {
 	// constantes
 	private final String REMETENTE = "Faturamento - Union Office";
 	private final String USERNAME = "faturamento@unionoffice.com.br";
 	private final String PASSWORD = "faturamento321";
-	private final int PORTASMTP = 58;
+	private final int PORTASMTP = 587;
 	private final String HOSTNAME = "smtp.unionoffice.com.br";
 	// parâmetros da mensagem
 	private String[] destinatario;
@@ -22,7 +22,7 @@ public class Email {
 	private HtmlEmail email;
 	private List<File> anexos;
 
-	public Email() throws EmailException {
+	public EmailNfe() throws EmailException {
 		this.email = new HtmlEmail();
 		email.setHostName(HOSTNAME);
 		email.setFrom(USERNAME, REMETENTE);
