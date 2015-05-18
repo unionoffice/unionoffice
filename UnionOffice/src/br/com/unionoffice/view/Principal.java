@@ -38,6 +38,17 @@ public class Principal extends JFrame {
 	}
 
 	private void definirEventos() {
-
+		tabbedPane.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {				
+				if(tabbedPane.getSelectedIndex() == 1){
+					setSize(700,720);
+				}else{
+					setSize(580,720);
+				}
+				setLocationRelativeTo(null);
+			}
+		});
 	}
 }

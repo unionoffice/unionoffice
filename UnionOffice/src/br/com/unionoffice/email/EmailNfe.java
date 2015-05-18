@@ -1,4 +1,4 @@
-package br.com.unionoffice.model;
+package br.com.unionoffice.email;
 
 import java.io.File;
 import java.util.List;
@@ -6,13 +6,9 @@ import java.util.List;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 
+import br.com.unionoffice.model.NotaFiscal;
+
 public class EmailNfe {
-	// constantes
-	private final String REMETENTE = "Faturamento - Union Office";
-	private final String USERNAME = "faturamento@unionoffice.com.br";
-	private final String PASSWORD = "faturamento321";
-	private final int PORTASMTP = 587;
-	private final String HOSTNAME = "smtp.unionoffice.com.br";
 	// parâmetros da mensagem
 	private String[] destinatario;
 	private String[] copias;
@@ -24,10 +20,10 @@ public class EmailNfe {
 
 	public EmailNfe() throws EmailException {
 		this.email = new HtmlEmail();
-		email.setHostName(HOSTNAME);
-		email.setFrom(USERNAME, REMETENTE);
-		email.setAuthentication(USERNAME, PASSWORD);
-		email.setSmtpPort(PORTASMTP);
+		email.setHostName(EmailConfig.HOSTNAME);
+		email.setFrom(EmailConfig.USERNAME, EmailConfig.REMETENTE);
+		email.setAuthentication(EmailConfig.USERNAME, EmailConfig.PASSWORD);
+		email.setSmtpPort(EmailConfig.PORTASMTP);
 	}
 
 	public void enviar() throws EmailException {

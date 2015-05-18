@@ -1,5 +1,7 @@
 package br.com.unionoffice.tablemodel;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,13 +10,14 @@ import javax.swing.table.AbstractTableModel;
 import br.com.unionoffice.model.Pedido;
 
 public class PedidoTableModel extends AbstractTableModel {
-	private String[] colunas = { "Nº", "Cliente", "Contato", "E-mail", "X" };
+	private String[] colunas = { "Nº", "Cliente", "Valor", "Contato", "E-mail",
+			"X" };
 	private List<Pedido> pedidos;
 
-	public PedidoTableModel(){
+	public PedidoTableModel() {
 		pedidos = new ArrayList<Pedido>();
 	}
-	
+
 	public PedidoTableModel(List<Pedido> pedidos) {
 		this.pedidos = pedidos;
 	}
@@ -38,19 +41,55 @@ public class PedidoTableModel extends AbstractTableModel {
 		case 1:
 			return pedido.getCliente();
 		case 2:
-			return pedido.getContato();
+			DecimalFormat formatador = new DecimalFormat("###0.00");
+			return formatador.format(pedido.getValor());
 		case 3:
-			return pedido.getEmailContato();
+			return pedido.getContato();
 		case 4:
+			return pedido.getEmailContato();
+		case 5:
 			return pedido.isEnviar();
 		default:
 			throw new IndexOutOfBoundsException("Índice inválido");
 		}
 	}
-	
+
 	@Override
-	public String getColumnName(int column) {	
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		if (columnIndex == 2 | columnIndex == 4 | columnIndex == 5) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		Pedido p = pedidos.get(rowIndex);
+		if (columnIndex == 2) {
+			String preco = aValue.toString().replace(',', '.');
+			p.setValor(new BigDecimal(preco));
+		} else if (columnIndex == 4) {
+			p.setEmailContato(aValue.toString());
+		} else if (columnIndex == 5) {
+			p.setEnviar((Boolean) aValue);
+		}
+	}
+
+	public Pedido getPedido(int linha) {
+		return pedidos.get(linha);
+	}
+
+	@Override
+	public String getColumnName(int column) {
 		return colunas[column];
+	}
+
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		if (columnIndex == 5) {
+			return Boolean.class;
+		}
+		return super.getColumnClass(columnIndex);
 	}
 
 }

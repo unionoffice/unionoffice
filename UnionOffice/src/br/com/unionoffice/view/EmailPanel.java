@@ -26,7 +26,7 @@ import javax.swing.text.EditorKit;
 
 import org.apache.commons.mail.EmailException;
 
-import br.com.unionoffice.model.EmailNfe;
+import br.com.unionoffice.email.EmailNfe;
 import br.com.unionoffice.model.NotaFiscal;
 
 public class EmailPanel extends JPanel {

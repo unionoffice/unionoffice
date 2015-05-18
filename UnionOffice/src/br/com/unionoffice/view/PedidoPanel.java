@@ -2,9 +2,16 @@ package br.com.unionoffice.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +22,20 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 
+import org.apache.commons.mail.EmailException;
+
+import br.com.unionoffice.email.EmailPedido;
 import br.com.unionoffice.model.Pedido;
+import br.com.unionoffice.model.Representante;
 import br.com.unionoffice.tablemodel.PedidoTableModel;
 
 public class PedidoPanel extends JPanel {
@@ -28,9 +43,10 @@ public class PedidoPanel extends JPanel {
 	JFileChooser fcDialog;
 	JLabel lbArquivo;
 	JTextField tfArquivo;
-	JButton btArquivo;
+	JButton btArquivo, btEnviar;
 	JScrollPane spPedidos;
 	JTable tbPedidos;
+	final JProgressBar progressBar = new JProgressBar();
 
 	public PedidoPanel() {
 		inicializarComponentes();
@@ -63,23 +79,53 @@ public class PedidoPanel extends JPanel {
 
 		// tbPedidos
 		tbPedidos = new JTable();
-		tbPedidos.setModel(new PedidoTableModel());
-		tbPedidos.getColumnModel().getColumn(0).setPreferredWidth(70);
-		tbPedidos.getColumnModel().getColumn(1).setPreferredWidth(100);
-		tbPedidos.getColumnModel().getColumn(2).setPreferredWidth(100);
-		tbPedidos.getColumnModel().getColumn(3).setPreferredWidth(200);
-		tbPedidos.getColumnModel().getColumn(4).setPreferredWidth(30);
+		tbPedidos.getTableHeader().setReorderingAllowed(false);
+		tbPedidos.getTableHeader().setResizingAllowed(false);
+		tbPedidos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		criarTabela(null);
 
 		// spPedidos
 		spPedidos = new JScrollPane(tbPedidos);
 		spPedidos.setLocation(5, 45);
-		spPedidos.setSize(550, 555);
+		spPedidos.setSize(680, 555);
+
+		// progressBar
+		progressBar.setLocation(5, 610);
+		progressBar.setSize(560, 40);
+		progressBar.setStringPainted(true);
+
+		// btEnviar
+		btEnviar = new JButton("Enviar");
+		btEnviar.setLocation(575, 610);
+		btEnviar.setSize(110, 40);
 
 		setLayout(null);
 		add(lbArquivo);
 		add(tfArquivo);
 		add(btArquivo);
 		add(spPedidos);
+		add(progressBar);
+		add(btEnviar);
+	}
+
+	private void criarTabela(List<Pedido> pedidos) {
+		if (pedidos == null) {
+			tbPedidos.setModel(new PedidoTableModel());
+		} else {
+			tbPedidos.setModel(new PedidoTableModel(pedidos));
+		}
+		DefaultTableCellRenderer cellRight = new DefaultTableCellRenderer();
+		cellRight.setHorizontalAlignment(SwingConstants.RIGHT);
+
+		tbPedidos.setRowHeight(20);
+		tbPedidos.getColumnModel().getColumn(0).setPreferredWidth(80);
+		tbPedidos.getColumnModel().getColumn(1).setPreferredWidth(130);
+		tbPedidos.getColumnModel().getColumn(2).setPreferredWidth(70);
+		tbPedidos.getColumnModel().getColumn(2).setCellRenderer(cellRight);
+		tbPedidos.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tbPedidos.getColumnModel().getColumn(4).setPreferredWidth(210);
+		tbPedidos.getColumnModel().getColumn(5).setPreferredWidth(20);
+
 	}
 
 	private void definirEventos() {
@@ -95,24 +141,81 @@ public class PedidoPanel extends JPanel {
 				}
 			}
 		});
+
+		tbPedidos.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					PedidoTableModel model = (PedidoTableModel) tbPedidos
+							.getModel();
+					Pedido p = model.getPedido(tbPedidos.getSelectedRow());
+					new VisualizaEmail(p);
+				}
+				super.mouseClicked(e);
+			}
+		});
+
+		btEnviar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				progressBar.setMaximum(pedidos.size());
+				for (final Pedido pedido : pedidos) {
+					if (pedido.isEnviar()) {
+						new Thread() {
+							public void run() {
+								try {
+
+									final EmailPedido email = new EmailPedido(
+											pedido);
+									email.enviar();
+									progressBar.setValue(progressBar.getValue() + 1);									
+								} catch (EmailException e) {
+									JOptionPane.showMessageDialog(
+											null,
+											"Erro ao enviar e-mail: "
+													+ pedido.getCliente()
+													+ "\n" + e.getMessage(),
+											"Erro de envio",
+											JOptionPane.ERROR_MESSAGE);
+								}
+							};
+						}.start();
+					}
+				}
+			}
+		});
 	}
 
 	private void lerPedidos(File file) {
-		long inicio = System.currentTimeMillis();
 		pedidos = new ArrayList<Pedido>();
 		List<Map<String, String>> contatos = new ArrayList<Map<String, String>>();
 		try {
 			Scanner leitor = new Scanner(file);
+			Representante rep = new Representante();
 			while (leitor.hasNext()) {
-				String linha = leitor.nextLine();				
+				// ler o representante
+				String linha = leitor.nextLine();
+				if (linha.startsWith("01")) {
+					linha = linha.substring(3);
+					linha = linha.replace('|', ';');
+					String[] campos = linha.split(";");
+					Map<String, String> map = new HashMap<String, String>();
+					for (int i = 0; i < campos.length - 1; i++) {
+						// System.out.println(campos[i]+"|"+ campos[++i]);
+						map.put(campos[i], campos[++i]);
+					}
+					rep.setNome(map.get("000001"));
+					rep.setEmail(map.get("000011"));
+				}
+
 				// ler os contatos
 				if (linha.startsWith("03")) {
 					linha = linha.substring(3);
 					linha = linha.replace('|', ';');
 					String[] campos = linha.split(";");
 					Map<String, String> map = new HashMap<String, String>();
-					for (int i = 0; i < campos.length - 1; i++) {						 
-						map.put(campos[i], campos[i + 1]);
+					for (int i = 0; i < campos.length - 1; i++) {
+						map.put(campos[i], campos[++i]);
 					}
 					contatos.add(map);
 				}
@@ -124,32 +227,48 @@ public class PedidoPanel extends JPanel {
 					Map<String, String> map = new HashMap<String, String>();
 					for (int i = 0; i < campos.length - 1; i++) {
 						// System.out.println(campos[i]+"|"+campos[++i]);
-						map.put(campos[i], campos[i + 1]);
+						map.put(campos[i], campos[++i]);
 					}
 					Pedido p = new Pedido();
-					p.setRepresentante(map.get("000000"));
+					rep.setSigla(map.get("000000"));
 					p.setNumero(map.get("000001"));
 					p.setCliente(map.get("000003"));
 					p.setContato(map.get("000059"));
+					p.setPedidoCliente(map.get("000071"));
+					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+					Date data = format.parse(map.get("000043"));
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(data);
+					p.setDataEntrega(calendar);
+					p.setRepresentante(rep);
+					p.setEnviar(true);
 					for (Map<String, String> item : contatos) {
 						if (item.get("000000").equals(p.getCliente())
 								&& item.get("000001").equals(p.getContato())) {
 							p.setEmailContato(item.get("000006"));
 							break;
-						}						
+						}
 					}
+					p.setValor(new BigDecimal(map.get("000020").replace(',',
+							'.')));
+					pedidos.add(p);
 				}
 			}
 			leitor.close();
+			criarTabela(pedidos);
+			progressBar.setValue(0);
+
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(this, "Erro ao ler o arquivo",
 					e.getMessage(), JOptionPane.ERROR_MESSAGE);
+		} catch (ParseException e) {
+			JOptionPane.showMessageDialog(this,
+					"Erro ao ler o data de entrega", e.getMessage(),
+					JOptionPane.ERROR_MESSAGE);
 		}
-		long fim = System.currentTimeMillis()-inicio;
-		System.out.println(fim);
-	}
-
-	private void gerarLog(Pedido pedido) {
 
 	}
+
+
 }
