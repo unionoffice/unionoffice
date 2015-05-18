@@ -158,7 +158,7 @@ public class PedidoPanel extends JPanel {
 		btEnviar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				progressBar.setMaximum(pedidos.size());
+				progressBar.setMaximum(pedidos.stream().filter((pedido) -> !pedido.isEnviar()).toArray().length);
 				for (final Pedido pedido : pedidos) {
 					if (pedido.isEnviar()) {
 						new Thread() {
@@ -250,8 +250,7 @@ public class PedidoPanel extends JPanel {
 							break;
 						}
 					}
-					p.setValor(new BigDecimal(map.get("000020").replace(',',
-							'.')));
+					p.setValor(new BigDecimal(map.get("000020").replace(',','.')));
 					pedidos.add(p);
 				}
 			}
