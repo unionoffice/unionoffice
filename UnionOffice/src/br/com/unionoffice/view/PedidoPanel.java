@@ -98,6 +98,7 @@ public class PedidoPanel extends JPanel {
 		btEnviar = new JButton("Enviar");
 		btEnviar.setLocation(575, 610);
 		btEnviar.setSize(110, 40);
+		btEnviar.setEnabled(false);
 
 		setLayout(null);
 		add(lbArquivo);
@@ -119,8 +120,8 @@ public class PedidoPanel extends JPanel {
 
 		tbPedidos.setRowHeight(20);
 		tbPedidos.getColumnModel().getColumn(0).setPreferredWidth(80);
-		tbPedidos.getColumnModel().getColumn(1).setPreferredWidth(130);
-		tbPedidos.getColumnModel().getColumn(2).setPreferredWidth(70);
+		tbPedidos.getColumnModel().getColumn(1).setPreferredWidth(150);
+		tbPedidos.getColumnModel().getColumn(2).setPreferredWidth(50);
 		tbPedidos.getColumnModel().getColumn(2).setCellRenderer(cellRight);
 		tbPedidos.getColumnModel().getColumn(3).setPreferredWidth(100);
 		tbPedidos.getColumnModel().getColumn(4).setPreferredWidth(210);
@@ -187,13 +188,15 @@ public class PedidoPanel extends JPanel {
 	}
 
 	private void lerPedidos(File file) {
+		//long inicio = System.currentTimeMillis();
 		pedidos = new ArrayList<Pedido>();
 		List<Map<String, String>> contatos = new ArrayList<Map<String, String>>();
+		List<Map<String,String>> representantes = new ArrayList<Map<String,String>>();
 		try {
 			Scanner leitor = new Scanner(file);
 			Representante rep = new Representante();
 			while (leitor.hasNext()) {
-				// ler o representante
+				// ler os representantes
 				String linha = leitor.nextLine();
 				if (linha.startsWith("01")) {
 					linha = linha.substring(3);
@@ -204,10 +207,9 @@ public class PedidoPanel extends JPanel {
 						// System.out.println(campos[i]+"|"+ campos[++i]);
 						map.put(campos[i], campos[++i]);
 					}
-					rep.setNome(map.get("000001"));
-					rep.setEmail(map.get("000011"));
+					representantes.add(map);
+					
 				}
-
 				// ler os contatos
 				if (linha.startsWith("03")) {
 					linha = linha.substring(3);
@@ -240,9 +242,16 @@ public class PedidoPanel extends JPanel {
 					Date data = format.parse(map.get("000043"));
 					Calendar calendar = Calendar.getInstance();
 					calendar.setTime(data);
-					p.setDataEntrega(calendar);
-					p.setRepresentante(rep);
+					p.setDataEntrega(calendar);					
 					p.setEnviar(true);
+					for (Map<String, String> item : representantes) {
+						if (item.get("000000").equals(rep.getSigla())) {
+							rep.setNome(item.get("000001"));
+							rep.setEmail(item.get("000011"));												
+							break;
+						}
+					}
+					p.setRepresentante(rep);
 					for (Map<String, String> item : contatos) {
 						if (item.get("000000").equals(p.getCliente())
 								&& item.get("000001").equals(p.getContato())) {
@@ -251,12 +260,14 @@ public class PedidoPanel extends JPanel {
 						}
 					}
 					p.setValor(new BigDecimal(map.get("000020").replace(',','.')));
-					pedidos.add(p);
+					pedidos.add(p);				
 				}
 			}
 			leitor.close();
 			criarTabela(pedidos);
 			progressBar.setValue(0);
+			btEnviar.setEnabled(true);
+			//System.out.println(System.currentTimeMillis()-inicio);
 
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(this, "Erro ao ler o arquivo",

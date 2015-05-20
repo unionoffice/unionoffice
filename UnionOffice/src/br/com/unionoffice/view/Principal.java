@@ -7,7 +7,7 @@ import javax.swing.event.ChangeListener;
 
 public class Principal extends JFrame {
 	JTabbedPane tabbedPane;
-	EmailPanel pnEmail;
+	NfePanel pnEmail;
 	PedidoPanel pnPedido;
 
 	public Principal() {
@@ -16,14 +16,14 @@ public class Principal extends JFrame {
 	}
 
 	private void inicializarComponentes() {
-		pnEmail = new EmailPanel();
+		pnEmail = new NfePanel();
 		pnPedido = new PedidoPanel();
 
 		tabbedPane = new JTabbedPane();
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		tabbedPane.addTab("Nfe", pnEmail);
-		tabbedPane.addTab("Pedido", pnPedido);
+		tabbedPane.addTab("Recebimento", pnPedido);
 		
 
 		setContentPane(tabbedPane);

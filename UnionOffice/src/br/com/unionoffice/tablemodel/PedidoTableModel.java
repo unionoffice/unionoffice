@@ -56,7 +56,7 @@ public class PedidoTableModel extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		if (columnIndex == 2 | columnIndex == 4 | columnIndex == 5) {
+		if (columnIndex >= 2 && columnIndex <= 5) {
 			return true;
 		}
 		return false;
@@ -68,8 +68,13 @@ public class PedidoTableModel extends AbstractTableModel {
 		if (columnIndex == 2) {
 			String preco = aValue.toString().replace(',', '.');
 			p.setValor(new BigDecimal(preco));
+			p.setMensagem(null);
+		} else if (columnIndex == 3) {
+			p.setContato(aValue.toString());
+			p.setMensagem(null);
 		} else if (columnIndex == 4) {
 			p.setEmailContato(aValue.toString());
+			p.setMensagem(null);
 		} else if (columnIndex == 5) {
 			p.setEnviar((Boolean) aValue);
 		}

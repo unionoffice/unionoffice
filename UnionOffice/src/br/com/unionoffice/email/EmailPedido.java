@@ -23,10 +23,11 @@ public class EmailPedido {
 		email.setSmtpPort(EmailConfig.PORTASMTP);
 		// preenche o e-mail com as informações do pedido
 		mensagem = pedido.getMensagem();
-		destinatario = "roberto@unionoffice.com.br"; //pedido.getEmailContato();
-		copias = "roberto@unionoffice.com.br"; //pedido.getRepresentante().getEmail();
-		copiasOcultas = "roberto@unionoffice.com.br"; //EmailConfig.USERNAME;
-		assunto = "Recebimento do Pedido "+pedido.getPedidoInterno()+" - "+pedido.getCliente();
+		destinatario = pedido.getEmailContato();
+		copias = pedido.getRepresentante().getEmail();
+		copiasOcultas = EmailConfig.USERNAME;
+		assunto = "Recebimento do Pedido " + pedido.getPedidoInterno() + " - "
+				+ pedido.getCliente();
 	}
 
 	public void enviar() throws EmailException {
@@ -61,8 +62,6 @@ public class EmailPedido {
 	public void setEmail(HtmlEmail email) {
 		this.email = email;
 	}
-
-	
 
 	public String getCopias() {
 		return copias;

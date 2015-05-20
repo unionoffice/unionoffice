@@ -29,7 +29,7 @@ import org.apache.commons.mail.EmailException;
 import br.com.unionoffice.email.EmailNfe;
 import br.com.unionoffice.model.NotaFiscal;
 
-public class EmailPanel extends JPanel {
+public class NfePanel extends JPanel {
 	JLabel lbPara, lbCopia, lbCopiaOculta, lbAssunto;
 	JPanel pnMensagem;
 	JButton btSelXml, btAddAnx, btRemAnex, btEnviar;
@@ -43,7 +43,7 @@ public class EmailPanel extends JPanel {
 	JCheckBox chkMantem, chkDeposito;
 	JFileChooser fcDialog;
 
-	public EmailPanel() {
+	public NfePanel() {
 		inicializarComponentes();
 		definirEventos();
 		anexos = new ArrayList<File>();

@@ -95,7 +95,7 @@ public class Pedido {
 		if (mensagem == null) {
 			mensagem = "<html><body>";
 			mensagem += "<font size=\"4\" face=\"Arial\" color=\"#ba1419\"><b>Recebimento do Pedido:<br> <br></b>";
-			mensagem += "À " + this.getCliente() + ":<br><br>";
+			mensagem += "À <b>" + this.getCliente() + "</b><br><br>";
 			Calendar calendar = Calendar.getInstance();
 			mensagem += "<b>"
 					+ (this.getContato().toLowerCase().startsWith("sr") ? this.getContato() : "Sr(a)" +this.getContato())
@@ -112,7 +112,7 @@ public class Pedido {
 					+ "</b><br><br>";
 			mensagem += "- Previsão de entrega: até <b>"
 					+ new SimpleDateFormat("dd/MM/yyyy").format(this
-							.getDataEntrega().getTime()) + "</b><br><br>";
+							.getDataEntrega().getTime()) + "</b>, em horário comercial<br><br>";
 			mensagem += "- Pedido interno: <b>" + this.getPedidoInterno()
 					+ "</b><br><br><br>";
 
