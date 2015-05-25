@@ -1,7 +1,12 @@
 package br.com.unionoffice.email;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.Scanner;
 
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
@@ -30,14 +35,14 @@ public class EmailNfe {
 		email.addTo(this.destinatario);
 		for (String dest : copias) {
 			if (dest.length() != 0) {
-				email.addCc(dest);	
+				email.addCc(dest);					
 			}	
 		}
 		for (String dest : copiasOculas) {
 			if (dest.length() != 0) {
-				email.addBcc(dest);	
+				email.addBcc(dest);
 			}			
-		}
+		}		
 		email.setSubject(assunto);
 		email.setHtmlMsg(this.mensagem);		
 		for (File f : anexos) {

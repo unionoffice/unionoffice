@@ -284,16 +284,16 @@ public class NfePanel extends JPanel {
 						"Selecione pelo menos um anexo para enviar.",
 						"Sem anexos", JOptionPane.INFORMATION_MESSAGE);
 			} else {				
-				new Thread() {
-					public void run() {
+				//new Thread() {
+				//	public void run() {
 						try {
-							email.setDestinatario(tfPara.getText().split(";"));
-							email.setCopias(tfCopia.getText().split(";"));
-							email.setCopiasOculas(tfCopiaOculta.getText().split(";"));
+							email.setDestinatario(tfPara.getText().trim().split(";"));
+							email.setCopias(tfCopia.getText().trim().split(";"));
+							email.setCopiasOculas(tfCopiaOculta.getText().trim().split(";"));
 							email.setAssunto(tfAssunto.getText());
 							email.setAnexos(anexos);
-							email.setMensagem(tpMsg.getText());					
-							email.enviar();
+							email.setMensagem(tpMsg.getText());							
+							email.enviar();													
 						} catch (Exception e) {
 							JOptionPane.showMessageDialog(null,
 									"Erro ao enviar e-mail: " + e.getMessage(),
@@ -301,9 +301,9 @@ public class NfePanel extends JPanel {
 						}
 
 					};
-				}.start();
+				//}.start();
 				limparDados(chkMantem.isSelected());
-			}
+			//}
 		}
 	};
 

@@ -159,7 +159,7 @@ public class PedidoPanel extends JPanel {
 		btEnviar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				progressBar.setMaximum(pedidos.stream().filter((pedido) -> !pedido.isEnviar()).toArray().length);
+				progressBar.setMaximum(pedidos.stream().filter((pedido) -> pedido.isEnviar()).toArray().length);				
 				for (final Pedido pedido : pedidos) {
 					if (pedido.isEnviar()) {
 						new Thread() {
@@ -169,7 +169,7 @@ public class PedidoPanel extends JPanel {
 									final EmailPedido email = new EmailPedido(
 											pedido);
 									email.enviar();
-									progressBar.setValue(progressBar.getValue() + 1);									
+									progressBar.setValue(progressBar.getValue() + 1);
 								} catch (EmailException e) {
 									JOptionPane.showMessageDialog(
 											null,
