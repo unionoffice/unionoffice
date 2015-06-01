@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.apache.commons.mail.EmailException;
 
+import br.com.unionoffice.dao.PedidoDao;
 import br.com.unionoffice.email.EmailPedido;
 import br.com.unionoffice.model.Pedido;
 import br.com.unionoffice.model.Representante;
@@ -159,9 +161,18 @@ public class PedidoPanel extends JPanel {
 		btEnviar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				progressBar.setMaximum(pedidos.stream().filter((pedido) -> pedido.isEnviar()).toArray().length);				
+				progressBar.setMaximum(pedidos.stream()
+						.filter((pedido) -> pedido.isEnviar()).toArray().length);
 				for (final Pedido pedido : pedidos) {
 					if (pedido.isEnviar()) {
+						if (pedido.getEmailContato() == null
+								|| pedido.getContato() == null) {
+							JOptionPane.showMessageDialog(null, "Pedido  "
+									+ pedido.getPedidoInterno()
+									+ " sem e-mail ou sem contato.Não enviado",
+									"Erro", JOptionPane.ERROR_MESSAGE);
+							continue;
+						}
 						new Thread() {
 							public void run() {
 								try {
@@ -169,6 +180,7 @@ public class PedidoPanel extends JPanel {
 									final EmailPedido email = new EmailPedido(
 											pedido);
 									email.enviar();
+									new PedidoDao().gravarPedido(pedido);
 									progressBar.setValue(progressBar.getValue() + 1);
 								} catch (EmailException e) {
 									JOptionPane.showMessageDialog(
@@ -177,6 +189,13 @@ public class PedidoPanel extends JPanel {
 													+ pedido.getCliente()
 													+ "\n" + e.getMessage(),
 											"Erro de envio",
+											JOptionPane.ERROR_MESSAGE);
+								} catch (SQLException e) {
+									JOptionPane.showMessageDialog(null,
+											"Erro ao gravar e-mail no banco de dados: "
+													+ pedido.getCliente()
+													+ "\n" + e.getMessage(),
+											"Erro de gravação",
 											JOptionPane.ERROR_MESSAGE);
 								}
 							};
@@ -188,10 +207,10 @@ public class PedidoPanel extends JPanel {
 	}
 
 	private void lerPedidos(File file) {
-		//long inicio = System.currentTimeMillis();
+		// long inicio = System.currentTimeMillis();
 		pedidos = new ArrayList<Pedido>();
 		List<Map<String, String>> contatos = new ArrayList<Map<String, String>>();
-		List<Map<String,String>> representantes = new ArrayList<Map<String,String>>();
+		List<Map<String, String>> representantes = new ArrayList<Map<String, String>>();
 		try {
 			Scanner leitor = new Scanner(file);
 			Representante rep = new Representante();
@@ -208,7 +227,7 @@ public class PedidoPanel extends JPanel {
 						map.put(campos[i], campos[++i]);
 					}
 					representantes.add(map);
-					
+
 				}
 				// ler os contatos
 				if (linha.startsWith("03")) {
@@ -242,12 +261,12 @@ public class PedidoPanel extends JPanel {
 					Date data = format.parse(map.get("000043"));
 					Calendar calendar = Calendar.getInstance();
 					calendar.setTime(data);
-					p.setDataEntrega(calendar);					
+					p.setDataEntrega(calendar);
 					p.setEnviar(true);
 					for (Map<String, String> item : representantes) {
 						if (item.get("000000").equals(rep.getSigla())) {
 							rep.setNome(item.get("000001"));
-							rep.setEmail(item.get("000011"));												
+							rep.setEmail(item.get("000011"));
 							break;
 						}
 					}
@@ -259,15 +278,17 @@ public class PedidoPanel extends JPanel {
 							break;
 						}
 					}
-					p.setValor(new BigDecimal(map.get("000020").replace(',','.')));
-					pedidos.add(p);				
+					p.setValor(new BigDecimal(map.get("000020").replace(',',
+							'.')));
+					pedidos.add(p);
 				}
+
 			}
 			leitor.close();
 			criarTabela(pedidos);
 			progressBar.setValue(0);
 			btEnviar.setEnabled(true);
-			//System.out.println(System.currentTimeMillis()-inicio);
+			// System.out.println(System.currentTimeMillis()-inicio);
 
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(this, "Erro ao ler o arquivo",
@@ -279,6 +300,5 @@ public class PedidoPanel extends JPanel {
 		}
 
 	}
-
 
 }

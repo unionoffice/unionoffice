@@ -2,6 +2,7 @@ package br.com.unionoffice.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -11,12 +12,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+
 public class NotaFiscal {
 	private String serie;
 	private String numero;
 	private String destinatario;
 	private String documento;
-	private String chave;
+	private String chave;	
+	private String email;
+	private Calendar dataEnvio;
+	
 
 	public NotaFiscal(File arquivo) throws SAXException, IOException,
 			ParserConfigurationException {
@@ -94,5 +99,21 @@ public class NotaFiscal {
 		this.setDocumento(doc.getTextContent());
 		this.setDestinatario(dest.getTextContent());
 		this.setChave(chave.getTextContent());
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	public Calendar getDataEnvio() {
+		return dataEnvio;
+	}
+	
+	public void setDataEnvio(Calendar dataEnvio) {
+		this.dataEnvio = dataEnvio;
 	}
 }

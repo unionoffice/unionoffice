@@ -30,16 +30,12 @@ public class EmailNfe {
 		email.addTo(this.destinatario);
 		for (String dest : copias) {
 			if (dest.length() != 0) {
-				email.addCc(dest);					
-
-				email.addCc(dest);				
-
+				email.addCc(dest);							
 			}
 		}
 		for (String dest : copiasOculas) {
 			if (dest.length() != 0) {
 				email.addBcc(dest);
-
 			}			
 		}		
 		email.setSubject(assunto);

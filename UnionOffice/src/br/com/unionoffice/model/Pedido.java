@@ -12,10 +12,18 @@ public class Pedido {
 	private String emailContato;
 	private String pedidoCliente;
 	private Calendar dataEntrega;
+	private Calendar dataEnvioReceb;
+	private Calendar dataEnvioSatisf;
 	private Representante representante;
 	private BigDecimal valor;
 	private boolean enviar;
 	private String mensagem;
+	private NotaFiscal notaFiscal;
+	private String pedidoInterno;
+
+	public void setPedidoInterno(String pedidoInterno) {
+		this.pedidoInterno = pedidoInterno;
+	}
 
 	public BigDecimal getValor() {
 		return valor;
@@ -70,8 +78,10 @@ public class Pedido {
 	}
 
 	public String getPedidoInterno() {
-		String pedidoInterno = this.representante.getSigla()
-				+ this.numero.substring(4) + "/" + this.numero.substring(0, 4);
+		if (pedidoInterno.isEmpty()) {
+			pedidoInterno = this.representante.getSigla()
+					+ this.numero.substring(4) + "/" + this.numero.substring(0, 4);	
+		}		
 		return pedidoInterno;
 	}
 
@@ -98,7 +108,8 @@ public class Pedido {
 			mensagem += "À <b>" + this.getCliente() + "</b><br><br>";
 			Calendar calendar = Calendar.getInstance();
 			mensagem += "<b>"
-					+ (this.getContato().toLowerCase().startsWith("sr") ? this.getContato() : "Sr(a)" +this.getContato())
+					+ (this.getContato().toLowerCase().startsWith("sr") ? this
+							.getContato() : "Sr(a)" + this.getContato())
 					+ "</b>, "
 					+ (calendar.get(Calendar.HOUR_OF_DAY) >= 12 ? "boa tarde!"
 							: "bom dia!") + "<br><br>";
@@ -112,7 +123,8 @@ public class Pedido {
 					+ "</b><br><br>";
 			mensagem += "- Previsão de entrega: até <b>"
 					+ new SimpleDateFormat("dd/MM/yyyy").format(this
-							.getDataEntrega().getTime()) + "</b>, em horário comercial<br><br>";
+							.getDataEntrega().getTime())
+					+ "</b>, em horário comercial<br><br>";
 			mensagem += "- Pedido interno: <b>" + this.getPedidoInterno()
 					+ "</b><br><br><br>";
 
@@ -131,6 +143,31 @@ public class Pedido {
 
 	public void setMensagem(String mensagem) {
 		this.mensagem = mensagem;
+	}
+
+	public NotaFiscal getNotaFiscal() {
+		return notaFiscal;
+	}
+
+	public void setNotaFiscal(NotaFiscal notaFiscal) {
+		this.notaFiscal = notaFiscal;
+	}
+
+	public Calendar getDataEnvioReceb() {
+		return dataEnvioReceb;
+	}
+
+	public void setDataEnvioReceb(Calendar dataEnvioReceb) {
+		this.dataEnvioReceb = dataEnvioReceb;
+	}
+
+	
+	public Calendar getDataEnvioSatisf() {
+		return dataEnvioSatisf;
+	}
+
+	public void setDataEnvioSatisf(Calendar dataEnvioSatisf) {
+		this.dataEnvioSatisf = dataEnvioSatisf;
 	}
 
 }
