@@ -256,6 +256,7 @@ public class PedidoPanel extends JPanel {
 					p.setCliente(map.get("000003"));
 					p.setContato(map.get("000059"));
 					p.setPedidoCliente(map.get("000071"));
+					System.out.println(p.getPedidoCliente());
 					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
 					Date data = format.parse(map.get("000043"));

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.unionoffice.model.NotaFiscal;
 import br.com.unionoffice.model.Pedido;
 
 public class PedidoDao {
@@ -40,7 +41,7 @@ public class PedidoDao {
 			p.setContato(rs.getString("contato"));
 			String nf = rs.getString("numero_nf");
 			System.out.println(nf);
-			if (nf == null) {
+			if (nf != null) {
 				
 			}
 			

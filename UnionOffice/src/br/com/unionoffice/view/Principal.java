@@ -8,15 +8,20 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import br.com.unionoffice.dao.ConnectionFactory;
+import br.com.unionoffice.tablemodel.PedidoFimTableModel;
 
 public class Principal extends JFrame {
 	JTabbedPane tabbedPane;
 	NfePanel pnEmail;
 	PedidoPanel pnPedido;
+	PedidoFimPanel pnFimPedido;
+	
+	
 
 	public Principal() {
 		inicializarComponentes();
@@ -26,13 +31,15 @@ public class Principal extends JFrame {
 	private void inicializarComponentes() {
 		pnEmail = new NfePanel();
 		pnPedido = new PedidoPanel();
+		pnFimPedido = new PedidoFimPanel();
+
 
 		tabbedPane = new JTabbedPane();
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
 		tabbedPane.addTab("Nfe", pnEmail);
 		tabbedPane.addTab("Recebimento", pnPedido);
-		tabbedPane.addTab("Entrega", new JPanel());
+		tabbedPane.addTab("Finalização", pnFimPedido);
 
 		setContentPane(tabbedPane);
 

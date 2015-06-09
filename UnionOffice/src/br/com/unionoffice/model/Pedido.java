@@ -17,6 +17,7 @@ public class Pedido {
 	private Representante representante;
 	private BigDecimal valor;
 	private boolean enviar;
+	private boolean enviarSatisf;
 	private String mensagem;
 	private NotaFiscal notaFiscal;
 	private String pedidoInterno;
@@ -78,10 +79,11 @@ public class Pedido {
 	}
 
 	public String getPedidoInterno() {
-		if (pedidoInterno.isEmpty()) {
+		if (pedidoInterno == null) {
 			pedidoInterno = this.representante.getSigla()
-					+ this.numero.substring(4) + "/" + this.numero.substring(0, 4);	
-		}		
+					+ this.numero.substring(4) + "/"
+					+ this.numero.substring(0, 4);
+		}
 		return pedidoInterno;
 	}
 
@@ -114,7 +116,8 @@ public class Pedido {
 					+ (calendar.get(Calendar.HOUR_OF_DAY) >= 12 ? "boa tarde!"
 							: "bom dia!") + "<br><br>";
 			mensagem += "É com satisfação que acusamos o recebimento de vosso pedido conforme dados abaixo:<br><br><br>";
-			if (!this.getPedidoCliente().trim().isEmpty()) {
+			if (this.getPedidoCliente() != null
+					&& !this.getPedidoCliente().trim().isEmpty()) {
 				mensagem += "- Pedido Cliente: <b>" + this.getPedidoCliente()
 						+ "</b><br><br>";
 			}
@@ -161,13 +164,20 @@ public class Pedido {
 		this.dataEnvioReceb = dataEnvioReceb;
 	}
 
-	
 	public Calendar getDataEnvioSatisf() {
 		return dataEnvioSatisf;
 	}
 
 	public void setDataEnvioSatisf(Calendar dataEnvioSatisf) {
 		this.dataEnvioSatisf = dataEnvioSatisf;
+	}
+
+	public boolean isEnviarSatisf() {
+		return enviarSatisf;
+	}
+
+	public void setEnviarSatisf(boolean enviarSatisf) {
+		this.enviarSatisf = enviarSatisf;
 	}
 
 }
