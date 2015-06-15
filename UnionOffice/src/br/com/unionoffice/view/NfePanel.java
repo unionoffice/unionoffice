@@ -5,15 +5,14 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -22,12 +21,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.EditorKit;
+import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.mail.EmailException;
+import org.xml.sax.SAXException;
 
 import br.com.unionoffice.email.EmailNfe;
 import br.com.unionoffice.model.NotaFiscal;
+import br.com.unionoffice.model.Pedido;
 
 public class NfePanel extends JPanel {
 	JLabel lbPara, lbCopia, lbCopiaOculta, lbAssunto;
@@ -42,6 +42,7 @@ public class NfePanel extends JPanel {
 	List<File> anexos;
 	JCheckBox chkMantem, chkDeposito;
 	JFileChooser fcDialog;
+	Pedido pedido;
 
 	public NfePanel() {
 		inicializarComponentes();
@@ -54,6 +55,27 @@ public class NfePanel extends JPanel {
 					"Erro ao criar objeto e-mail", JOptionPane.ERROR_MESSAGE);
 		}
 
+	}
+	
+	public void lerPedido(Pedido ped, File xml){
+		this.pedido = ped;
+		try {
+			NotaFiscal nota = new NotaFiscal(xml);
+			pedido.setNotaFiscal(nota);
+			tfPara.setText(pedido.getEmailContato());
+			tfAssunto.setText("Ref.: Nota Fiscal Eletronica - NF "
+					+ nota.getNumero().substring(4) + " - "
+					+ nota.getDestinatario());
+			tpMsg.setText(EmailNfe.criaMensagem(nota,
+					chkDeposito.isSelected()));
+			if (!anexos.contains(xml)) {
+				anexos.add(xml);
+			}
+			atualizaAnexos();
+			btEnviar.setEnabled(true);
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		}
 	}
 
 	private void inicializarComponentes() {

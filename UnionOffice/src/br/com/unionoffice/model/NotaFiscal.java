@@ -22,6 +22,9 @@ public class NotaFiscal {
 	private String email;
 	private Calendar dataEnvio;
 	
+	public NotaFiscal() {
+		
+	}
 	
 
 	public NotaFiscal(File arquivo) throws SAXException, IOException,

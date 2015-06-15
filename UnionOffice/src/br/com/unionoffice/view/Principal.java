@@ -2,22 +2,21 @@ package br.com.unionoffice.view;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import br.com.unionoffice.dao.ConnectionFactory;
-import br.com.unionoffice.tablemodel.PedidoFimTableModel;
+import br.com.unionoffice.model.Pedido;
 
 public class Principal extends JFrame {
-	JTabbedPane tabbedPane;
-	NfePanel pnEmail;
+	static JTabbedPane tabbedPane;
+	static NfePanel pnEmail;
 	PedidoPanel pnPedido;
 	PedidoFimPanel pnFimPedido;
 	
@@ -59,7 +58,9 @@ public class Principal extends JFrame {
 			public void stateChanged(ChangeEvent arg0) {
 				if (tabbedPane.getSelectedIndex() == 1) {
 					setSize(700, 720);
-				} else {
+				}else if (tabbedPane.getSelectedIndex() == 2){
+					setSize(850,720);
+				}else {
 					setSize(580, 720);
 				}
 				setLocationRelativeTo(null);
@@ -78,5 +79,10 @@ public class Principal extends JFrame {
 
 			}
 		});
+	}
+	
+	public static void lerXML(Pedido pedido, File xml){
+		pnEmail.lerPedido(pedido, xml);		
+		tabbedPane.setSelectedIndex(0);
 	}
 }
