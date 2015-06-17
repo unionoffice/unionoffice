@@ -54,6 +54,7 @@ public class PedidoDao {
 			lista.add(p);
 		}
 		rs.close();
+		stmt.close();
 		return lista;
 	}
 	
@@ -90,11 +91,13 @@ public class PedidoDao {
 					Calendar dataEnv = Calendar.getInstance();
 					dataEnv.setTime(dataEnvioNF);
 					nota.setDataEnvio(dataEnv);
-				}		
+				}
+				p.setNotaFiscal(nota);
 			}
 			lista.add(p);
 		}
 		rs.close();
+		stmt.close();
 		return lista;
 	}
 	
@@ -130,6 +133,7 @@ public class PedidoDao {
 			lista.add(p);
 		}
 		rs.close();
+		stmt.close();
 		return lista;
 	}
 	
@@ -165,12 +169,48 @@ public class PedidoDao {
 					dataEnv.setTime(dataEnvioNF);
 					nota.setDataEnvio(dataEnv);
 				}
-				
+				p.setNotaFiscal(nota);
 			}
 			lista.add(p);
 		}
 		rs.close();
+		stmt.close();
 		return lista;
+	}
+	
+	public void excluir(Pedido pedido) throws SQLException{		
+		conexao.setAutoCommit(false);
+		String sql = "DELETE FROM pedido WHERE numero = ?";
+		stmt = conexao.prepareStatement(sql);
+		stmt.setString(1, pedido.getPedidoInterno());
+		if (pedido.getNotaFiscal() != null) {
+			String sql2 = "DELETE FROM nota_fiscal WHERE numero = ?";
+			PreparedStatement stmt2 = conexao.prepareStatement(sql2);
+			stmt2.setString(1, pedido.getNotaFiscal().getNum());
+			stmt2.execute();
+		}
+		stmt.execute();
+		conexao.commit();
+		stmt.close();
+	}
+	
+	public void gravarNf(Pedido pedido) throws SQLException{
+		String sqlNf = "INSERT INTO nota_fiscal(numero,serie,chave,data_envio,email_nf) VALUES(?,?,?,NOW(),?)";
+		String sqlPedido = "UPDATE pedido SET numero_nf = ? WHERE numero = ?";
+		conexao.setAutoCommit(false);
+		stmt = conexao.prepareStatement(sqlNf);
+		PreparedStatement stmt2 = conexao.prepareStatement(sqlPedido);
+		stmt.setString(1, pedido.getNotaFiscal().getNum());
+		stmt.setString(2, pedido.getNotaFiscal().getSerie());
+		stmt.setString(3,pedido.getNotaFiscal().getChave());
+		stmt.setString(4, pedido.getNotaFiscal().getEmail());
+		stmt2.setString(1, pedido.getNotaFiscal().getNum());
+		stmt2.setString(2, pedido.getPedidoInterno());
+		stmt.execute();
+		stmt2.execute();
+		conexao.commit();
+		stmt.close();
+		stmt2.close();
 	}
 		
 }

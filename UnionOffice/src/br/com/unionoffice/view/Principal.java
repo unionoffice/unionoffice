@@ -18,7 +18,7 @@ public class Principal extends JFrame {
 	static JTabbedPane tabbedPane;
 	static NfePanel pnEmail;
 	PedidoPanel pnPedido;
-	PedidoFimPanel pnFimPedido;
+	static PedidoFimPanel pnFimPedido;
 	
 	
 
@@ -60,6 +60,7 @@ public class Principal extends JFrame {
 					setSize(700, 720);
 				}else if (tabbedPane.getSelectedIndex() == 2){
 					setSize(850,720);
+					pnFimPedido.cbFiltrar.setSelectedIndex(0);
 				}else {
 					setSize(580, 720);
 				}
@@ -84,5 +85,10 @@ public class Principal extends JFrame {
 	public static void lerXML(Pedido pedido, File xml){
 		pnEmail.lerPedido(pedido, xml);		
 		tabbedPane.setSelectedIndex(0);
+	}
+	
+	public static void retornar(){
+		tabbedPane.setSelectedIndex(2);
+		pnFimPedido.cbFiltrar.setSelectedIndex(0);
 	}
 }

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,10 @@ import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.mail.EmailException;
 import org.xml.sax.SAXException;
 
+import br.com.unionoffice.dao.PedidoDao;
 import br.com.unionoffice.email.EmailNfe;
 import br.com.unionoffice.model.NotaFiscal;
 import br.com.unionoffice.model.Pedido;
@@ -44,6 +47,7 @@ public class NfePanel extends JPanel {
 	JFileChooser fcDialog;
 	Pedido pedido;
 
+
 	public NfePanel() {
 		inicializarComponentes();
 		definirEventos();
@@ -60,7 +64,7 @@ public class NfePanel extends JPanel {
 	public void lerPedido(Pedido ped, File xml){
 		this.pedido = ped;
 		try {
-			NotaFiscal nota = new NotaFiscal(xml);
+			nota = new NotaFiscal(xml);
 			pedido.setNotaFiscal(nota);
 			tfPara.setText(pedido.getEmailContato());
 			tfAssunto.setText("Ref.: Nota Fiscal Eletronica - NF "
@@ -283,6 +287,7 @@ public class NfePanel extends JPanel {
 		tfAssunto.setText(null);
 		tpMsg.setText(null);
 		nota = null;
+		pedido = null;
 		anexos = new ArrayList<File>();
 		lstAnexos.setModel(new DefaultListModel<File>());
 		if (!mantem) {
@@ -314,12 +319,21 @@ public class NfePanel extends JPanel {
 							email.setCopiasOculas(tfCopiaOculta.getText().trim().split(";"));
 							email.setAssunto(tfAssunto.getText());
 							email.setAnexos(anexos);
-							email.setMensagem(tpMsg.getText());							
-							email.enviar();													
-						} catch (Exception e) {
+							email.setMensagem(tpMsg.getText());			
+							email.enviar();							
+							if (pedido != null) {								
+								pedido.getNotaFiscal().setEmail(email.getDestinatario()[0]);
+								new PedidoDao().gravarNf(pedido);
+								Principal.retornar();
+							}
+						} catch (EmailException e) {
 							JOptionPane.showMessageDialog(null,
 									"Erro ao enviar e-mail: " + e.getMessage(),
 									"Erro de envio", JOptionPane.ERROR_MESSAGE);
+						}catch (SQLException e){
+							JOptionPane.showMessageDialog(null,
+									"Erro ao gravar a nf: " + e.getMessage(),
+									"Erro de gravação", JOptionPane.ERROR_MESSAGE);
 						}
 
 					};

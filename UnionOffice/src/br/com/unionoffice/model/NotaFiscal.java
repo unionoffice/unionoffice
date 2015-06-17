@@ -35,6 +35,14 @@ public class NotaFiscal {
 	public String getNumero() {
 		return serie + " / " + numero;
 	}
+	
+	public String getNum(){
+		return numero;
+	}
+	
+	public String getSerie(){
+		return serie;
+	}
 
 	public void setNumero(String serie, String numero) {
 		this.serie = serie;

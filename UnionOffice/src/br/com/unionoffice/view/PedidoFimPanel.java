@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -25,17 +26,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.MaskFormatter;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+
 import br.com.unionoffice.dao.PedidoDao;
 import br.com.unionoffice.model.Pedido;
 import br.com.unionoffice.tablemodel.PedidoFimTableModel;
-
-import com.sun.glass.events.KeyEvent;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 
 public class PedidoFimPanel extends JPanel {
 	JComboBox<String> cbFiltrar;
@@ -341,7 +340,7 @@ public class PedidoFimPanel extends JPanel {
 
 		btEnviaNF.addActionListener(event -> {
 			if (pedido != null) {
-				int returnValue = fcDialog.showOpenDialog(null);	
+				int returnValue = fcDialog.showOpenDialog(null);
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					File xml = fcDialog.getSelectedFile();
 					Principal.lerXML(pedido, xml);
@@ -349,6 +348,27 @@ public class PedidoFimPanel extends JPanel {
 			}
 		});
 
+		tbPedidos.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (tbPedidos.getSelectedRow() >= 0 && e.getKeyCode() == 127) {									
+					int opcao = JOptionPane.showConfirmDialog(
+							PedidoFimPanel.this, "Deseja excluir o pedido "
+									+ pedido.getPedidoInterno() + "?",
+							"Confirmar exclusão", JOptionPane.YES_NO_OPTION);
+					if (opcao == 0) {
+						try {
+							daoPedido.excluir(pedido);							
+							cbFiltrar.setSelectedIndex(0);
+						} catch (Exception e2) {
+							JOptionPane.showMessageDialog(PedidoFimPanel.this, "Erro ao excluir o pedido: "+e2.getMessage());
+						}
+					}
+				}
+				System.out.println(e.getKeyCode());
+
+			}
+		});
 	}
 
 	private void exibirInformacoes() {
