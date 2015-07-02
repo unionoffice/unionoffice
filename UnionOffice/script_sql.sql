@@ -15,6 +15,15 @@ create table if not exists `pedido` (
     data_envio_receb DATETIME NOT NULL,
     data_envio_satisf DATETIME DEFAULT NULL,
     CONSTRAINT fk_nota FOREIGN KEY(numero_nf) REFERENCES nota_fiscal(numero) ON DELETE CASCADE);
+create table if not exists `satisfacao` (
+	id INTEGER AUTO_INCREMENT PRIMARY KEY,
+	numero_nf INTEGER NOT NULL,
+	data_resposta DATETIME NOT NULL,
+	quest1 INTEGER, 
+	quest2 INTEGER,
+	quest3 INTEGER,
+	comentarios TEXT,
+	CONSTRAINT fk_nf FOREIGN KEY(numero_nf) REFERENCES nota_fiscal(numero) ON DELETE CASCADE);
 create view if not exists view_pedidos AS
 SELECT 	p.numero numero_pedido, 
 		p.cliente, p.email, 

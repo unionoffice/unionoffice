@@ -30,8 +30,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.MaskFormatter;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-
 import br.com.unionoffice.dao.PedidoDao;
 import br.com.unionoffice.model.Pedido;
 import br.com.unionoffice.tablemodel.PedidoFimTableModel;
@@ -364,9 +362,13 @@ public class PedidoFimPanel extends JPanel {
 							JOptionPane.showMessageDialog(PedidoFimPanel.this, "Erro ao excluir o pedido: "+e2.getMessage());
 						}
 					}
-				}
-				System.out.println(e.getKeyCode());
-
+				}				
+			}
+		});
+		
+		btEnviaSat.addActionListener(event ->{
+			if (pedido.getDataEnvioSatisf() == null) {
+				
 			}
 		});
 	}
