@@ -18,7 +18,9 @@ create table if not exists `pedido` (
 create table if not exists `satisfacao` (
 	id INTEGER AUTO_INCREMENT PRIMARY KEY,
 	numero_nf INTEGER NOT NULL,
-	data_resposta DATETIME NOT NULL,
+	email TEXT NOT NULL,
+	data_envio DATETIME NOT NULL,
+	data_resposta DATETIME,
 	quest1 INTEGER, 
 	quest2 INTEGER,
 	quest3 INTEGER,

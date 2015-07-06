@@ -146,7 +146,6 @@ public class Pedido {
 
 	public String getMsgSatisfacao() {
 		String mensagem = "<html><body>";
-		mensagem += "<font size=\"4\" face=\"Arial\" color=\"#ba1419\"><b>Recebimento do Pedido:<br> <br></b>";
 		mensagem += "À <b>" + this.getCliente() + "</b><br><br>";
 		Calendar calendar = Calendar.getInstance();
 		mensagem += "<b>"
@@ -159,17 +158,17 @@ public class Pedido {
 				+ this.getPedidoInterno() + "</b>, através da NF <b>"
 				+ this.getNotaFiscal().getNum() + "</b>.<br><br>";
 		mensagem += "Solicitamos a gentileza do preenchimento da Pesquisa de Satisfação abaixo:<br><br>";
-		mensagem += "<b>1 -</b>O prazo de entrega estabelecido foi cumprido? <br><br>";
+		mensagem += "<b>1 - </b>O prazo de entrega estabelecido foi cumprido? <br><br>";
 		mensagem += "(&nbsp;&nbsp;&nbsp;)Sim&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;&nbsp;&nbsp;)Não<br><br>";
-		mensagem += "<b>2 -</b>A qualidade dos produtos recebidos atendeu às suas expectativas? <br><br>";
+		mensagem += "<b>2 - </b>A qualidade dos produtos recebidos atendeu às suas expectativas? <br><br>";
 		mensagem += "(&nbsp;&nbsp;&nbsp;)Sim&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;&nbsp;&nbsp;)Não<br><br>";
-		mensagem += "<b>3 -</b>Como foi o atendimento dado pelos colaboradores da Union durante este processo de compra? <br><br>";
+		mensagem += "<b>3 - </b>Como foi o atendimento dado pelos colaboradores da Union durante este processo de compra? <br><br>";
 		mensagem += "(&nbsp;&nbsp;&nbsp;)Ótimo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;&nbsp;&nbsp;)Bom&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		mensagem += "(&nbsp;&nbsp;&nbsp;)Regular&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;&nbsp;&nbsp;)Ruim&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>";
-		mensagem += "<b>4 -</b>Há alguma sugestão para a melhoria contínua de nossos serviços? Escreva abaixo. <br><br>";
+		mensagem += "<b>4 - </b>Há alguma sugestão para a melhoria contínua de nossos serviços? Escreva abaixo. <br><br><br><br>";
 		mensagem += "Qualquer anormalidade que eventualmente possa ocorrer em nossos produtos, ";
 		mensagem += "nos contate através do tel.:<b>(11)5521-1664</b> ou e-mail: <a href=\"mailto:sac@unionoffice.com.br\">";
-		mensagem += "<font color=\"#2f3699\">sac@unionoffice.com.br</font> mencionando o número da NF de entrega.</a><br><br>";
+		mensagem += "<font color=\"#2f3699\">sac@unionoffice.com.br</font></a> mencionando o número da NF de entrega.</a><br><br>";
 		mensagem += "Somos gratos por vossa atenção";
 		mensagem += "</body></html>";
 		return mensagem;

@@ -212,5 +212,13 @@ public class PedidoDao {
 		stmt.close();
 		stmt2.close();
 	}
+	
+	public void atualizaSat(Pedido pedido) throws SQLException {
+		String sql = "UPDATE pedido SET data_envio_satisf = NOW() WHERE numero = ?";
+		stmt = conexao.prepareStatement(sql);
+		stmt.setString(1, pedido.getPedidoInterno());
+		stmt.execute();
+		stmt.close();
+	}
 		
 }
