@@ -11,6 +11,7 @@ import java.util.List;
 
 import br.com.unionoffice.model.NotaFiscal;
 import br.com.unionoffice.model.Pedido;
+import br.com.unionoffice.model.Satisfacao;
 
 public class PedidoDao {
 	private Connection conexao;
@@ -217,6 +218,18 @@ public class PedidoDao {
 		String sql = "UPDATE pedido SET data_envio_satisf = NOW() WHERE numero = ?";
 		stmt = conexao.prepareStatement(sql);
 		stmt.setString(1, pedido.getPedidoInterno());
+		stmt.execute();
+		stmt.close();
+	}
+	
+	public void pontuar(Satisfacao satisfacao) throws SQLException{
+		String sql = "UPDATE satisfacao SET data_resposta = NOW(), quest1 = ?, quest2 = ?, quest3 = ?, comentarios = ? WHERE id = ?";
+		stmt = conexao.prepareStatement(sql);
+		stmt.setInt(1, satisfacao.getQuestoes()[0]);
+		stmt.setInt(2, satisfacao.getQuestoes()[1]);
+		stmt.setInt(3, satisfacao.getQuestoes()[2]);
+		stmt.setString(4, satisfacao.getComentarios());
+		stmt.setInt(5, satisfacao.getId());
 		stmt.execute();
 		stmt.close();
 	}

@@ -45,7 +45,13 @@ public class PedidoFimTableModel extends AbstractTableModel {
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {	
 		if (columnIndex == 3) {
-			return true;
+			Pedido p = pedidos.get(rowIndex);
+			if(p.getDataEnvioSatisf() != null){
+				return false;	
+			}else{
+				return true;
+			}
+			
 		}
 		return false;
 	}

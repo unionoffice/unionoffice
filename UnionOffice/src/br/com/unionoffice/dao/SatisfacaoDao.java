@@ -33,10 +33,10 @@ public class SatisfacaoDao {
 			sat.setEmail(rs.getString("email"));
 			Calendar dataEnvio = Calendar.getInstance();
 			dataEnvio.setTime(rs.getTimestamp("data_envio"));
-			sat.setDataEnvio(dataEnvio);
-			Date dataResposta = rs.getDate("data_resposta");
+			sat.setDataEnvio(dataEnvio);			
+			Date dataResposta = rs.getTimestamp("data_resposta");
 			if (dataResposta != null) {
-				Calendar dataResp = Calendar.getInstance();
+				Calendar dataResp = Calendar.getInstance();	
 				dataResp.setTime(dataResposta);
 				sat.setDataResposta(dataResp);
 				int respostas[] = new int[3];

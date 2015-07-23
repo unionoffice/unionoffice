@@ -273,6 +273,7 @@ public class PedidoFimPanel extends JPanel {
 		lbSatisfacao.setSize(320,40);
 		lbSatisfacao.setFont(fonteSatisfacao);
 		lbSatisfacao.setHorizontalAlignment(SwingConstants.CENTER);
+		lbSatisfacao.setOpaque(true);
 
 		setLayout(null);
 		add(cbFiltrar);
@@ -449,7 +450,12 @@ public class PedidoFimPanel extends JPanel {
 				}.start();
 			} else {
 				new PesquisaFrame(pedido, sat);
+				calculaSatisfacao(sat.getQuestoes());
 			}
+		});
+		
+		btEnviarMassa.addActionListener(e -> {
+			
 		});
 	}
 
@@ -497,7 +503,7 @@ public class PedidoFimPanel extends JPanel {
 						lbSatisfacao.setText("Não pontuado");
 					} else {
 						btSatisf.setText("Respostas");
-						lbDataEnvioSat.setText("Pontuado: "
+						lbDataRespSat.setText("Pontuado: "
 								+ new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
 										.format(sat.getDataResposta()
 												.getTime()));

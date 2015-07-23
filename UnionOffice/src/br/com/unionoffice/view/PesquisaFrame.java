@@ -1,13 +1,23 @@
 package br.com.unionoffice.view;
 
+
+
+import java.awt.FocusTraversalPolicy;
+import java.awt.KeyboardFocusManager;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 
+import br.com.unionoffice.dao.PedidoDao;
 import br.com.unionoffice.model.Pedido;
 import br.com.unionoffice.model.Satisfacao;
 
@@ -20,15 +30,50 @@ public class PesquisaFrame extends JDialog {
 	JTextArea taComentarios;
 	JScrollPane spComentarios;
 	ButtonGroup bgQuest1, bgQuest2, bgQuest3;
-	JButton btGravar;
+	JButton btGravar;	
 
 	public PesquisaFrame(Pedido pedido, Satisfacao satisf) {
 		this.pedido = pedido;
 		this.satisf = satisf;
 		inicializarComponentes();
 		definirEventos();
+		if (satisf.getQuestoes() != null) {
+			exibeRespostas();	
+		}		
 		setModal(true);
 		setVisible(true);
+	}
+	
+	private void exibeRespostas(){
+		if (satisf.getQuestoes()[0] == 3) {
+			rbSim1.setSelected(true);
+		}else{
+			rbNao1.setSelected(true);
+		}
+		
+		if (satisf.getQuestoes()[1] == 3) {
+			rbSim2.setSelected(true);
+		}else{
+			rbNao2.setSelected(true);
+		}
+		
+		switch (satisf.getQuestoes()[2]) {
+		case 1:
+			rbRuim.setSelected(true);
+			break;
+		case 2:
+			rbRegular.setSelected(true);
+			break;
+		case 3:
+			rbBom.setSelected(true);
+			break;
+		case 4:
+			rbOtimo.setSelected(true);
+			break;
+		default:
+			break;
+		}
+		taComentarios.setText(satisf.getComentarios());
 	}
 
 	private void inicializarComponentes() {
@@ -126,6 +171,12 @@ public class PesquisaFrame extends JDialog {
 		
 		// taComentarios
 		taComentarios = new JTextArea();
+		Set<KeyStroke> teclas = new HashSet<KeyStroke>();
+		teclas.add(KeyStroke.getKeyStroke("TAB"));
+		taComentarios.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS ,teclas);
+		taComentarios.setWrapStyleWord(true);
+		taComentarios.setLineWrap(true);
+		
 		
 		// spComentarios
 		spComentarios = new JScrollPane(taComentarios);
@@ -133,7 +184,7 @@ public class PesquisaFrame extends JDialog {
 		spComentarios.setSize(310,100);
 		
 		// btGravar
-		btGravar = new JButton(satisf.getQuestoes() == null ? "Gravar" : "Fechar");
+		btGravar = new JButton(satisf.getQuestoes() == null ? "Gravar" : "Atualizar");
 		btGravar.setLocation(110,420);
 		btGravar.setSize(100,30);		
 
@@ -162,6 +213,33 @@ public class PesquisaFrame extends JDialog {
 	}
 
 	private void definirEventos() {
-
+		btGravar.addActionListener(e -> {
+			int[] questoes = new int[3];
+			if (bgQuest1.getSelection() != null) {
+				questoes[0] = rbSim1.isSelected() ? 3 : 0;
+			}
+			if (bgQuest2.getSelection() != null) {
+				questoes[1] = rbSim2.isSelected() ? 3 : 0;
+			}
+			if (bgQuest3.getSelection() != null) {
+				if (rbOtimo.isSelected()) {
+					questoes[2] = 4;
+				}else if (rbBom.isSelected()){
+					questoes[2] = 3;
+				}else if (rbRegular.isSelected()){
+					questoes[2] = 2;
+				}else {
+					questoes[2] = 1;
+				}
+			}
+			satisf.setQuestoes(questoes);
+			satisf.setComentarios(taComentarios.getText());
+			try {
+				new PedidoDao().pontuar(satisf);
+				dispose();
+			} catch (Exception erro) {
+				JOptionPane.showMessageDialog(PesquisaFrame.this, erro.getMessage());
+			}			
+		});
 	}
 }
