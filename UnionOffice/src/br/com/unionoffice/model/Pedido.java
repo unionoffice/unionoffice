@@ -146,6 +146,7 @@ public class Pedido {
 
 	public String getMsgSatisfacao() {
 		String mensagem = "<html><body>";
+		mensagem += "<font size=\"4\" face=\"Arial\" color=\"#ba1419\">";
 		mensagem += "À <b>" + this.getCliente() + "</b><br><br>";
 		Calendar calendar = Calendar.getInstance();
 		mensagem += "<b>"

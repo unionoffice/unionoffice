@@ -33,8 +33,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.MaskFormatter;
 
+import org.apache.commons.mail.EmailException;
+
 import br.com.unionoffice.dao.PedidoDao;
 import br.com.unionoffice.dao.SatisfacaoDao;
+import br.com.unionoffice.email.EmailPedido;
 import br.com.unionoffice.email.EmailSatisfacao;
 import br.com.unionoffice.model.Pedido;
 import br.com.unionoffice.model.Satisfacao;
@@ -335,7 +338,7 @@ public class PedidoFimPanel extends JPanel {
 			if (tfBuscar.getValue() != null) {
 				String parametro = tfBuscar.getValue().toString();
 				try {
-					criarTabela(daoPedido.buscarNumero(parametro));
+					criarTabela(pedidos = daoPedido.buscarNumero(parametro));
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(PedidoFimPanel.this,
 							e.getMessage());
@@ -347,13 +350,13 @@ public class PedidoFimPanel extends JPanel {
 			try {
 				switch (cbFiltrar.getSelectedIndex()) {
 				case 0:
-					criarTabela(daoPedido.listarNaoFaturados());
+					criarTabela(pedidos = daoPedido.listarNaoFaturados());
 					break;
 				case 1:
-					criarTabela(daoPedido.listarSemPesquisa());
+					criarTabela(pedidos = daoPedido.listarSemPesquisa());
 					break;
 				case 2:
-					criarTabela(daoPedido.listarTodos());
+					criarTabela(pedidos = daoPedido.listarTodos());
 					break;
 				default:
 					break;
@@ -455,7 +458,49 @@ public class PedidoFimPanel extends JPanel {
 		});
 		
 		btEnviarMassa.addActionListener(e -> {
-			
+			progressBar.setMaximum(pedidos.stream()
+					.filter((pedido) -> pedido.isEnviarSatisf()).toArray().length);
+			for (final Pedido pedido : pedidos) {
+				if (pedido.isEnviarSatisf()) {
+					if (pedido.getEmailContato() == null
+							|| pedido.getContato() == null) {
+						JOptionPane.showMessageDialog(null, "Pedido  "
+								+ pedido.getPedidoInterno()
+								+ " sem e-mail ou sem contato.Não enviado",
+								"Erro", JOptionPane.ERROR_MESSAGE);
+						continue;
+					}					
+					new Thread() {
+						public void run() {
+							try {								
+								final EmailSatisfacao email = new EmailSatisfacao(
+										pedido);
+								email.enviar();																
+								daoSatisfacao.criar(sat, pedido.getNotaFiscal()
+										.getNum());
+								daoPedido.atualizaSat(pedido);
+								progressBar.setValue(progressBar.getValue() + 1);
+							} catch (EmailException e) {
+								JOptionPane.showMessageDialog(
+										null,
+										"Erro ao enviar e-mail: "
+												+ pedido.getCliente()
+												+ "\n" + e.getMessage(),
+										"Erro de envio",
+										JOptionPane.ERROR_MESSAGE);
+							} catch (SQLException e) {
+								JOptionPane.showMessageDialog(null,
+										"Erro ao gravar e-mail no banco de dados: "
+												+ pedido.getCliente()
+												+ "\n" + e.getMessage(),
+										"Erro de gravação",
+										JOptionPane.ERROR_MESSAGE);
+							}
+						};
+					}.start();
+				}
+			}
+			cbFiltrar.setSelectedIndex(1);			
 		});
 	}
 

@@ -105,7 +105,7 @@ public class PedidoDao {
 	
 	public List<Pedido> listarSemPesquisa() throws SQLException{
 		List<Pedido> lista = new ArrayList<Pedido>();
-		String sql = "SELECT * FROM view_pedidos WHERE data_envio_satisf IS NULL ORDER BY numero_nf DESC";
+		String sql = "SELECT * FROM view_pedidos WHERE data_envio_satisf IS NULL AND numero_nf IS NOT NULL ORDER BY numero_nf DESC";
 		stmt = conexao.prepareStatement(sql);
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {

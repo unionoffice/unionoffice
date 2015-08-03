@@ -23,14 +23,14 @@ public class EmailSatisfacao {
 		// preenche o e-mail com as informações do pedido
 		mensagem = pedido.getMsgSatisfacao();
 		destinatario = "roberto@unionoffice.com.br";//*/pedido.getEmailContato();
-		copias = "roberto@unionoffice.com.br";//*/ pedido.getRepresentante().getEmail();		
-		assunto = "Recebimento do Pedido " + pedido.getPedidoInterno() + " - "
+		copias = "roberto@unionoffice.com.br";// */EmailConfig.USERNAME;
+		assunto = "Conclusão do Pedido " + pedido.getPedidoInterno() + " - "
 				+ pedido.getCliente();
 	}
 
 	public void enviar() throws EmailException {
 		email.addTo(this.destinatario);
-		email.addCc(copias);		
+		email.addBcc(copias);		
 		email.setSubject(assunto);
 		email.setHtmlMsg(this.mensagem);
 		email.send();
