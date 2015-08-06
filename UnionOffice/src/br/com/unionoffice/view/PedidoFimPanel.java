@@ -51,18 +51,18 @@ public class PedidoFimPanel extends JPanel {
 	JTextField tfEmailNf, tfEmailSat;
 	JLabel lbBuscar, lbEmailRecebimento, lbContatoRecebimento,
 			lbDataEnvioRecebimento, lbDataEnvioNF, lbEmailNF, lbEmailSat,
-			lbDataEnvioSat, lbPedido, lbIconeRec, lbIconeNf, lbIconeSat, lbDataRespSat, lbSatisfacao;
+			lbDataEnvioSat, lbPedido, lbIconeRec, lbIconeNf, lbIconeSat,
+			lbDataRespSat, lbSatisfacao;
 	List<Pedido> pedidos;
 	JTable tbPedidos;
 	JScrollPane pnPedidos;
 	JPanel pnRecebimento, pnXML, pnSatisf;
-	JButton btEnviarMassa;
+
 	PedidoDao daoPedido;
 	SatisfacaoDao daoSatisfacao;
 	Pedido pedido;
 	Satisfacao sat;
 	JFileChooser fcDialog;
-	final JProgressBar progressBar = new JProgressBar();
 
 	public PedidoFimPanel() {
 		try {
@@ -76,9 +76,9 @@ public class PedidoFimPanel extends JPanel {
 	}
 
 	private void inicializarComponentes() {
-		//fonteSatisfacao
+		// fonteSatisfacao
 		fonteSatisfacao = new Font("Arial", Font.BOLD, 20);
-		
+
 		// fcDialog
 		fcDialog = new JFileChooser();
 		fcDialog.setCurrentDirectory(new File("P:\\NFE"));
@@ -131,17 +131,7 @@ public class PedidoFimPanel extends JPanel {
 		// pnPedidos
 		pnPedidos = new JScrollPane(tbPedidos);
 		pnPedidos.setLocation(5, 45);
-		pnPedidos.setSize(500, 550);
-
-		// progressBar
-		progressBar.setLocation(5, 605);
-		progressBar.setSize(400, 40);
-		progressBar.setStringPainted(true);
-
-		// btEnviarMassa
-		btEnviarMassa = new JButton("Satisfação");
-		btEnviarMassa.setLocation(410, 605);
-		btEnviarMassa.setSize(95, 40);
+		pnPedidos.setSize(500, 600);
 
 		// lbPedido
 		lbPedido = new JLabel();
@@ -203,7 +193,6 @@ public class PedidoFimPanel extends JPanel {
 		lbDataEnvioNF = new JLabel("Enviado:");
 		lbDataEnvioNF.setLocation(10, 65);
 		lbDataEnvioNF.setSize(300, 25);
-		
 
 		// btEnviaNF
 		btEnviaNF = new JButton("Enviar NF");
@@ -244,11 +233,11 @@ public class PedidoFimPanel extends JPanel {
 		lbDataEnvioSat = new JLabel("Enviado:");
 		lbDataEnvioSat.setLocation(10, 65);
 		lbDataEnvioSat.setSize(300, 25);
-		
+
 		// lbDataRespSat
 		lbDataRespSat = new JLabel("Pontuado:");
-		lbDataRespSat.setLocation(10,100);
-		lbDataRespSat.setSize(300,25);
+		lbDataRespSat.setLocation(10, 100);
+		lbDataRespSat.setSize(300, 25);
 
 		// btSatisf
 		btSatisf = new JButton("Enviar Satisfação");
@@ -268,12 +257,12 @@ public class PedidoFimPanel extends JPanel {
 		pnSatisf.add(lbDataRespSat);
 		pnSatisf.add(btSatisf);
 		pnSatisf.add(lbIconeSat);
-		
-		//lbSatisfacao
+
+		// lbSatisfacao
 		lbSatisfacao = new JLabel();
 		lbSatisfacao.setBorder(BorderFactory.createLineBorder(Color.black));
-		lbSatisfacao.setLocation(510,605);
-		lbSatisfacao.setSize(320,40);
+		lbSatisfacao.setLocation(510, 605);
+		lbSatisfacao.setSize(320, 40);
 		lbSatisfacao.setFont(fonteSatisfacao);
 		lbSatisfacao.setHorizontalAlignment(SwingConstants.CENTER);
 		lbSatisfacao.setOpaque(true);
@@ -284,8 +273,7 @@ public class PedidoFimPanel extends JPanel {
 		add(tfBuscar);
 		add(btFiltrar);
 		add(pnPedidos);
-		add(progressBar);
-		add(btEnviarMassa);
+
 		add(lbPedido);
 		add(pnRecebimento);
 		add(pnXML);
@@ -299,14 +287,17 @@ public class PedidoFimPanel extends JPanel {
 		} else {
 			tbPedidos.setModel(new PedidoFimTableModel(lista));
 		}
-		DefaultTableCellRenderer cellRight = new DefaultTableCellRenderer();
-		cellRight.setHorizontalAlignment(SwingConstants.RIGHT);
+		DefaultTableCellRenderer cellCenter = new DefaultTableCellRenderer();
+		cellCenter.setHorizontalAlignment(SwingConstants.CENTER);
 
 		tbPedidos.setRowHeight(20);
-		tbPedidos.getColumnModel().getColumn(0).setPreferredWidth(90);
-		tbPedidos.getColumnModel().getColumn(1).setPreferredWidth(80);
-		tbPedidos.getColumnModel().getColumn(2).setPreferredWidth(300);
-		tbPedidos.getColumnModel().getColumn(3).setPreferredWidth(40);
+		tbPedidos.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tbPedidos.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tbPedidos.getColumnModel().getColumn(2).setPreferredWidth(310);
+		
+		tbPedidos.getColumnModel().getColumn(0).setCellRenderer(cellCenter);
+		tbPedidos.getColumnModel().getColumn(1).setCellRenderer(cellCenter);
+				
 	}
 
 	private void definirEventos() {
@@ -456,52 +447,7 @@ public class PedidoFimPanel extends JPanel {
 				calculaSatisfacao(sat.getQuestoes());
 			}
 		});
-		
-		btEnviarMassa.addActionListener(e -> {
-			progressBar.setMaximum(pedidos.stream()
-					.filter((pedido) -> pedido.isEnviarSatisf()).toArray().length);
-			for (final Pedido pedido : pedidos) {
-				if (pedido.isEnviarSatisf()) {
-					if (pedido.getEmailContato() == null
-							|| pedido.getContato() == null) {
-						JOptionPane.showMessageDialog(null, "Pedido  "
-								+ pedido.getPedidoInterno()
-								+ " sem e-mail ou sem contato.Não enviado",
-								"Erro", JOptionPane.ERROR_MESSAGE);
-						continue;
-					}					
-					new Thread() {
-						public void run() {
-							try {								
-								final EmailSatisfacao email = new EmailSatisfacao(
-										pedido);
-								email.enviar();																
-								daoSatisfacao.criar(sat, pedido.getNotaFiscal()
-										.getNum());
-								daoPedido.atualizaSat(pedido);
-								progressBar.setValue(progressBar.getValue() + 1);
-							} catch (EmailException e) {
-								JOptionPane.showMessageDialog(
-										null,
-										"Erro ao enviar e-mail: "
-												+ pedido.getCliente()
-												+ "\n" + e.getMessage(),
-										"Erro de envio",
-										JOptionPane.ERROR_MESSAGE);
-							} catch (SQLException e) {
-								JOptionPane.showMessageDialog(null,
-										"Erro ao gravar e-mail no banco de dados: "
-												+ pedido.getCliente()
-												+ "\n" + e.getMessage(),
-										"Erro de gravação",
-										JOptionPane.ERROR_MESSAGE);
-							}
-						};
-					}.start();
-				}
-			}
-			cbFiltrar.setSelectedIndex(1);			
-		});
+
 	}
 
 	private void exibirInformacoes() {
@@ -529,8 +475,14 @@ public class PedidoFimPanel extends JPanel {
 				alteraIcone(lbIconeNf, true);
 				btEnviaNF.setEnabled(false);
 				tfEmailNf.setEditable(false);
+				btSatisf.setEnabled(true);
 			} else {
 				alteraIcone(lbIconeNf, false);
+				btSatisf.setEnabled(false);
+				btEnviaNF.setEnabled(true);
+				tfEmailNf.setEditable(true);
+				lbDataEnvioNF.setText("Enviado:");
+				tfEmailNf.setText(null);
 			}
 
 			if (pedido.getDataEnvioSatisf() != null) {
@@ -546,12 +498,15 @@ public class PedidoFimPanel extends JPanel {
 					if (sat.getDataResposta() == null) {
 						btSatisf.setText("Pontuar");
 						lbSatisfacao.setText("Não pontuado");
+						lbSatisfacao.setBackground(null);
+						btSatisf.setEnabled(true);
+						lbDataRespSat.setText("Pontuado:");
 					} else {
 						btSatisf.setText("Respostas");
 						lbDataRespSat.setText("Pontuado: "
-								+ new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
-										.format(sat.getDataResposta()
-												.getTime()));
+								+ new SimpleDateFormat(
+										"dd/MM/yyyy 'às' HH:mm:ss").format(sat
+										.getDataResposta().getTime()));
 						calculaSatisfacao(sat.getQuestoes());
 					}
 				} catch (SQLException erro) {
@@ -560,7 +515,14 @@ public class PedidoFimPanel extends JPanel {
 							"Erro: " + erro.getMessage());
 				}
 			} else {
+				lbDataEnvioSat.setText("Enviado:");
+				tfEmailSat.setEditable(true);
+				tfEmailSat.setText(null);
+				lbSatisfacao.setText(null);
+				lbSatisfacao.setBackground(null);
 				alteraIcone(lbIconeSat, false);
+				btSatisf.setText("Enviar Satisfação");
+				lbDataRespSat.setText("Pontuado:");
 			}
 		}
 	}
@@ -574,24 +536,24 @@ public class PedidoFimPanel extends JPanel {
 					"/imagens/icone_nao.png")));
 		}
 	}
-	
-	private void calculaSatisfacao(int[] respostas){
+
+	private void calculaSatisfacao(int[] respostas) {
 		int soma = 0;
 		for (int i = 0; i < respostas.length; i++) {
 			soma += respostas[i];
 		}
-		if (soma <=3) {
+		if (soma <= 3) {
 			lbSatisfacao.setBackground(Color.red);
 			lbSatisfacao.setText("Ruim");
-		}else if (soma <= 5) {
+		} else if (soma <= 5) {
 			lbSatisfacao.setBackground(Color.yellow);
 			lbSatisfacao.setText("Regular");
-		}else if (soma <= 8) {
-			lbSatisfacao.setBackground(new Color(0,200,0));
+		} else if (soma <= 8) {
+			lbSatisfacao.setBackground(new Color(0, 200, 0));
 			lbSatisfacao.setText("Bom");
-		}else {
+		} else {
 			lbSatisfacao.setBackground(Color.green);
-			lbSatisfacao.setText("Ótimo");	
+			lbSatisfacao.setText("Ótimo");
 		}
 	}
 

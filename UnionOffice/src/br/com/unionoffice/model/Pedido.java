@@ -16,8 +16,7 @@ public class Pedido {
 	private Calendar dataEnvioSatisf;
 	private Representante representante;
 	private BigDecimal valor;
-	private boolean enviar;
-	private boolean enviarSatisf;
+	private boolean enviar;	
 	private String mensagem;
 	private NotaFiscal notaFiscal;
 	private String pedidoInterno;
@@ -203,12 +202,6 @@ public class Pedido {
 		this.dataEnvioSatisf = dataEnvioSatisf;
 	}
 
-	public boolean isEnviarSatisf() {
-		return enviarSatisf;
-	}
 
-	public void setEnviarSatisf(boolean enviarSatisf) {
-		this.enviarSatisf = enviarSatisf;
-	}
 
 }
