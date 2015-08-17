@@ -435,7 +435,7 @@ public class PedidoFimPanel extends JPanel {
 									+ new SimpleDateFormat(
 											"dd/MM/yyyy 'às' HH:mm:ss")
 											.format(Calendar.getInstance()
-													.getTime()));
+													.getTime()));							
 						} catch (Exception erro) {
 							JOptionPane.showMessageDialog(PedidoFimPanel.this,
 									"Erro: " + erro.getMessage());

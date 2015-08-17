@@ -22,8 +22,8 @@ public class EmailSatisfacao {
 		email.setSmtpPort(EmailConfig.PORTASMTP);
 		// preenche o e-mail com as informações do pedido
 		mensagem = pedido.getMsgSatisfacao();
-		destinatario = "roberto@unionoffice.com.br";//*/pedido.getEmailContato();
-		copias = "roberto@unionoffice.com.br";// */EmailConfig.USERNAME;
+		destinatario = /*"roberto@unionoffice.com.br";//*/pedido.getEmailContato();
+		copias = /*"roberto@unionoffice.com.br";// */EmailConfig.USERNAME;
 		assunto = "Conclusão do Pedido " + pedido.getPedidoInterno() + " - "
 				+ pedido.getCliente();
 	}
