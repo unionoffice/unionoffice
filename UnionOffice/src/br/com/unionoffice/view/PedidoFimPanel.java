@@ -23,7 +23,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -33,11 +32,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.MaskFormatter;
 
-import org.apache.commons.mail.EmailException;
-
 import br.com.unionoffice.dao.PedidoDao;
 import br.com.unionoffice.dao.SatisfacaoDao;
-import br.com.unionoffice.email.EmailPedido;
 import br.com.unionoffice.email.EmailSatisfacao;
 import br.com.unionoffice.model.Pedido;
 import br.com.unionoffice.model.Satisfacao;
@@ -294,10 +290,10 @@ public class PedidoFimPanel extends JPanel {
 		tbPedidos.getColumnModel().getColumn(0).setPreferredWidth(100);
 		tbPedidos.getColumnModel().getColumn(1).setPreferredWidth(100);
 		tbPedidos.getColumnModel().getColumn(2).setPreferredWidth(310);
-		
+
 		tbPedidos.getColumnModel().getColumn(0).setCellRenderer(cellCenter);
 		tbPedidos.getColumnModel().getColumn(1).setCellRenderer(cellCenter);
-				
+
 	}
 
 	private void definirEventos() {
@@ -362,12 +358,12 @@ public class PedidoFimPanel extends JPanel {
 		tbPedidos
 				.getSelectionModel()
 				.addListSelectionListener(
-						event -> {
+						event -> {							
 							if (tbPedidos.getSelectedRow() >= 0) {
 								PedidoFimTableModel model = (PedidoFimTableModel) tbPedidos
 										.getModel();
 								pedido = model.getPedido(tbPedidos
-										.getSelectedRow());
+										.getSelectedRow());								
 								exibirInformacoes();
 							}
 
@@ -409,48 +405,48 @@ public class PedidoFimPanel extends JPanel {
 			}
 		});
 
-		btSatisf.addActionListener(event -> {
+		btSatisf.addActionListener(event -> {			
 			if (sat == null) {
-				new Thread() {
-					public void run() {
-						try {
-							sat = new Satisfacao();
-							if (!tfEmailSat.getText().isEmpty()) {
-								sat.setEmail(tfEmailSat.getText());
-							} else {
-								sat.setEmail(pedido.getEmailContato());
-							}
-							final EmailSatisfacao emailSat = new EmailSatisfacao(
-									pedido);
-							emailSat.setAssunto("Conclusão de entrega");
-							emailSat.setDestinatario(sat.getEmail());
-							emailSat.enviar();
-							daoSatisfacao.criar(sat, pedido.getNotaFiscal()
-									.getNum());
-							daoPedido.atualizaSat(pedido);
-							alteraIcone(lbIconeSat, true);
-							tfEmailSat.setEditable(false);
-							tfEmailSat.setText(sat.getEmail());
-							lbDataEnvioSat.setText("Enviado: "
-									+ new SimpleDateFormat(
-											"dd/MM/yyyy 'às' HH:mm:ss")
-											.format(Calendar.getInstance()
-													.getTime()));							
-						} catch (Exception erro) {
-							JOptionPane.showMessageDialog(PedidoFimPanel.this,
-									"Erro: " + erro.getMessage());
-						}
-					};
-				}.start();
+				// new Thread() {
+				// public void run() {
+				try {
+					sat = new Satisfacao();
+					if (!tfEmailSat.getText().isEmpty()) {
+						sat.setEmail(tfEmailSat.getText());
+					} else {
+						sat.setEmail(pedido.getEmailContato());
+					}
+					final EmailSatisfacao emailSat = new EmailSatisfacao(pedido);
+					emailSat.setAssunto("Conclusão de entrega");
+					emailSat.setDestinatario(sat.getEmail());
+					emailSat.enviar();
+					daoSatisfacao.criar(sat, pedido.getNotaFiscal().getNum());
+					daoPedido.atualizaSat(pedido);
+					alteraIcone(lbIconeSat, true);
+					tfEmailSat.setEditable(false);
+					tfEmailSat.setText(sat.getEmail());
+					lbDataEnvioSat.setText("Enviado: "
+							+ new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
+									.format(Calendar.getInstance().getTime()));
+				} catch (Exception erro) {
+					JOptionPane.showMessageDialog(PedidoFimPanel.this, "Erro: "
+							+ erro.getMessage());
+				}
+				// };
+				// }.start();
 			} else {
 				new PesquisaFrame(pedido, sat);
-				calculaSatisfacao(sat.getQuestoes());
+				if (sat.getQuestoes() != null) {
+					calculaSatisfacao(sat.getQuestoes());	
+				}
+				
 			}
 		});
 
 	}
 
 	private void exibirInformacoes() {
+		sat = null;
 		if (pedido != null) {
 			lbPedido.setText(pedido.getPedidoInterno() + " - "
 					+ pedido.getCliente());
