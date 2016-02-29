@@ -20,10 +20,10 @@ public class EmailNfe {
 
 	public EmailNfe() throws EmailException {
 		this.email = new HtmlEmail();
-		email.setHostName(EmailConfig.HOSTNAME);
-		email.setFrom(EmailConfig.USERNAME, EmailConfig.REMETENTE);
-		email.setAuthentication(EmailConfig.USERNAME, EmailConfig.PASSWORD);
-		email.setSmtpPort(EmailConfig.PORTASMTP);
+		email.setHostName(EmailConfig.ConfigVendas.HOSTNAME);
+		email.setFrom(EmailConfig.ConfigVendas.USERNAME, EmailConfig.ConfigVendas.REMETENTE);
+		email.setAuthentication(EmailConfig.ConfigVendas.USERNAME, EmailConfig.ConfigVendas.PASSWORD);
+		email.setSmtpPort(EmailConfig.ConfigVendas.PORTASMTP);
 	}
 
 	public void enviar() throws EmailException {		

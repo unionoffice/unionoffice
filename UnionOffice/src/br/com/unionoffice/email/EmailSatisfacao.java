@@ -16,14 +16,14 @@ public class EmailSatisfacao {
 
 	public EmailSatisfacao(Pedido pedido) throws EmailException {
 		this.email = new HtmlEmail();
-		email.setHostName(EmailConfig.HOSTNAME);
-		email.setFrom(EmailConfig.USERNAME, "Adm. Vendas - Union Office");
-		email.setAuthentication(EmailConfig.USERNAME, EmailConfig.PASSWORD);
-		email.setSmtpPort(EmailConfig.PORTASMTP);
+		email.setHostName(EmailConfig.ConfigVendas.HOSTNAME);
+		email.setFrom(EmailConfig.ConfigVendas.USERNAME, EmailConfig.ConfigVendas.REMETENTE);
+		email.setAuthentication(EmailConfig.ConfigVendas.USERNAME, EmailConfig.ConfigVendas.PASSWORD);
+		email.setSmtpPort(EmailConfig.ConfigVendas.PORTASMTP);
 		// preenche o e-mail com as informações do pedido
 		mensagem = pedido.getMsgSatisfacao();
 		destinatario = /*"roberto@unionoffice.com.br";//*/pedido.getEmailContato();
-		copias = /*"roberto@unionoffice.com.br";// */EmailConfig.USERNAME;
+		copias = /*"roberto@unionoffice.com.br";// */EmailConfig.ConfigVendas.USERNAME;
 		assunto = "Conclusão do Pedido " + pedido.getPedidoInterno() + " - "
 				+ pedido.getCliente();
 	}

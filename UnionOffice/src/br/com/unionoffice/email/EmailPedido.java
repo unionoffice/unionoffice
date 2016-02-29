@@ -17,15 +17,15 @@ public class EmailPedido {
 
 	public EmailPedido(Pedido pedido) throws EmailException {
 		this.email = new HtmlEmail();
-		email.setHostName(EmailConfig.HOSTNAME);
-		email.setFrom(EmailConfig.USERNAME, "Adm. Vendas - Union Office");
-		email.setAuthentication(EmailConfig.USERNAME, EmailConfig.PASSWORD);
-		email.setSmtpPort(EmailConfig.PORTASMTP);
+		email.setHostName(EmailConfig.ConfigVendas.HOSTNAME);
+		email.setFrom(EmailConfig.ConfigVendas.USERNAME, EmailConfig.ConfigVendas.REMETENTE);
+		email.setAuthentication(EmailConfig.ConfigVendas.USERNAME, EmailConfig.ConfigVendas.PASSWORD);
+		email.setSmtpPort(EmailConfig.ConfigVendas.PORTASMTP);
 		// preenche o e-mail com as informações do pedido
 		mensagem = pedido.getMensagem();
 		destinatario = /*"roberto@unionoffice.com.br";//*/pedido.getEmailContato();
 		copias = /*"roberto@unionoffice.com.br";//*/ pedido.getRepresentante().getEmail();
-		copiasOcultas = /*"roberto@unionoffice.com.br";// */EmailConfig.USERNAME;
+		copiasOcultas = /*"roberto@unionoffice.com.br";// */EmailConfig.ConfigVendas.USERNAME;
 		assunto = "Recebimento do Pedido " + pedido.getPedidoInterno() + " - "
 				+ pedido.getCliente();
 	}

@@ -416,7 +416,7 @@ public class PedidoFimPanel extends JPanel {
 					} else {
 						sat.setEmail(pedido.getEmailContato());
 					}
-					final EmailSatisfacao emailSat = new EmailSatisfacao(pedido);
+					EmailSatisfacao emailSat = new EmailSatisfacao(pedido);
 					emailSat.setAssunto("Conclusão de entrega");
 					emailSat.setDestinatario(sat.getEmail());
 					emailSat.enviar();
