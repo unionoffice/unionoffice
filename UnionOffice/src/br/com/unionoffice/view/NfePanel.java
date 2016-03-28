@@ -116,7 +116,7 @@ public class NfePanel extends JPanel {
 		lbCopiaOculta.setSize(70, 25);
 
 		// tfCopiaOculta
-		tfCopiaOculta = new JTextField("faturamento@unionoffice.com.br");
+		tfCopiaOculta = new JTextField("vendas@unionoffice.com.br");
 		tfCopiaOculta.setLocation(80, 65);
 		tfCopiaOculta.setSize(350, 25);
 
