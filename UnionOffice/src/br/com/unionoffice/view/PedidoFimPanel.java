@@ -35,6 +35,7 @@ import javax.swing.text.MaskFormatter;
 import br.com.unionoffice.dao.PedidoDao;
 import br.com.unionoffice.dao.SatisfacaoDao;
 import br.com.unionoffice.email.EmailSatisfacao;
+import br.com.unionoffice.model.NotaFiscal;
 import br.com.unionoffice.model.Pedido;
 import br.com.unionoffice.model.Satisfacao;
 import br.com.unionoffice.tablemodel.PedidoFimTableModel;
@@ -410,6 +411,12 @@ public class PedidoFimPanel extends JPanel {
 				// new Thread() {
 				// public void run() {
 				try {
+					if(pedido.getNotaFiscal() == null){
+						NotaFiscal nota = new NotaFiscal();
+						nota.setNumero("1",JOptionPane.showInputDialog("Informe o número da NF"));						
+						pedido.setNotaFiscal(nota);
+						daoPedido.gravarNf(pedido);
+					}
 					sat = new Satisfacao();
 					if (!tfEmailSat.getText().isEmpty()) {
 						sat.setEmail(tfEmailSat.getText());
@@ -431,6 +438,7 @@ public class PedidoFimPanel extends JPanel {
 				} catch (Exception erro) {
 					JOptionPane.showMessageDialog(PedidoFimPanel.this, "Erro: "
 							+ erro.getMessage());
+					erro.printStackTrace();
 				}
 				// };
 				// }.start();
@@ -462,11 +470,11 @@ public class PedidoFimPanel extends JPanel {
 				alteraIcone(lbIconeRec, false);
 			}
 
-			if (pedido.getNotaFiscal() != null) {
+			if (pedido.getNotaFiscal() != null && pedido.getNotaFiscal().getChave() != null) {
 				lbDataEnvioNF.setText("Enviado: "
 						+ new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
 								.format(pedido.getNotaFiscal().getDataEnvio()
-										.getTime()));
+									.getTime()));
 				tfEmailNf.setText(pedido.getNotaFiscal().getEmail());
 				alteraIcone(lbIconeNf, true);
 				btEnviaNF.setEnabled(false);
@@ -474,7 +482,7 @@ public class PedidoFimPanel extends JPanel {
 				btSatisf.setEnabled(true);
 			} else {
 				alteraIcone(lbIconeNf, false);
-				btSatisf.setEnabled(false);
+				btSatisf.setEnabled(true);
 				btEnviaNF.setEnabled(true);
 				tfEmailNf.setEditable(true);
 				lbDataEnvioNF.setText("Enviado:");
