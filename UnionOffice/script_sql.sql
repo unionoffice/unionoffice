@@ -4,7 +4,7 @@ create table if not exists `nota_fiscal` (
 	numero INTEGER AUTO_INCREMENT PRIMARY KEY,
     serie TINYINT NOT NULL,
     chave VARCHAR(50) NOT NULL,
-    data_envio DATETIME NOT NULL
+    data_envio DATETIME NOT NULL,
     email_nf VARCHAR(255) NOT NULL);
 create table if not exists `pedido` (
 	numero VARCHAR(11) PRIMARY KEY,

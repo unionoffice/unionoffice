@@ -13,17 +13,13 @@ import br.com.unionoffice.model.NotaFiscal;
 import br.com.unionoffice.model.Pedido;
 import br.com.unionoffice.model.Satisfacao;
 
-public class PedidoDao {
-	private Connection conexao;
+public class PedidoDao {	
 	PreparedStatement stmt;
-	
-	public PedidoDao() throws SQLException{
-		conexao = ConnectionFactory.getConnection();
-	}
+		
 	
 	public void gravarPedido(Pedido pedido) throws SQLException{
 		String sql = "INSERT INTO pedido(numero,cliente,contato,email,data_envio_receb) VALUES(?,?,?,?,NOW())";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		stmt.setString(1, pedido.getPedidoInterno());
 		stmt.setString(2, pedido.getCliente());
 		stmt.setString(3, pedido.getContato());
@@ -35,7 +31,7 @@ public class PedidoDao {
 	public List<Pedido> listarNaoFaturados() throws SQLException{
 		List<Pedido> lista = new ArrayList<Pedido>();
 		String sql = "SELECT * FROM view_pedidos WHERE numero_nf IS NULL ORDER BY numero_pedido DESC";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);		
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			Pedido p = new Pedido();
@@ -63,7 +59,7 @@ public class PedidoDao {
 		List<Pedido> lista = new ArrayList<Pedido>();
 		Pedido p = null;
 		String sql = "SELECT * FROM view_pedidos WHERE numero_pedido = ?";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		stmt.setString(1, numero);
 		ResultSet rs = stmt.executeQuery();
 		if (rs.next()) {
@@ -106,7 +102,7 @@ public class PedidoDao {
 	public List<Pedido> listarSemPesquisa() throws SQLException{
 		List<Pedido> lista = new ArrayList<Pedido>();
 		String sql = "SELECT * FROM view_pedidos WHERE data_envio_satisf IS NULL AND numero_nf IS NOT NULL ORDER BY numero_nf DESC";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			Pedido p = new Pedido();
@@ -141,7 +137,7 @@ public class PedidoDao {
 	public List<Pedido> listarTodos() throws SQLException{
 		List<Pedido> lista = new ArrayList<Pedido>();
 		String sql = "SELECT * FROM view_pedidos ORDER BY numero_pedido DESC";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			Pedido p = new Pedido();
@@ -180,27 +176,27 @@ public class PedidoDao {
 	}
 	
 	public void excluir(Pedido pedido) throws SQLException{		
-		conexao.setAutoCommit(false);
+		ConnectionFactory.getConnection().setAutoCommit(false);
 		String sql = "DELETE FROM pedido WHERE numero = ?";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		stmt.setString(1, pedido.getPedidoInterno());
 		if (pedido.getNotaFiscal() != null) {
 			String sql2 = "DELETE FROM nota_fiscal WHERE numero = ?";
-			PreparedStatement stmt2 = conexao.prepareStatement(sql2);
+			PreparedStatement stmt2 = ConnectionFactory.getConnection().prepareStatement(sql2);
 			stmt2.setString(1, pedido.getNotaFiscal().getNum());
 			stmt2.execute();
 		}
 		stmt.execute();
-		conexao.commit();
+		ConnectionFactory.getConnection().commit();
 		stmt.close();
 	}
 	
 	public void gravarNf(Pedido pedido) throws SQLException{
 		String sqlNf = "INSERT INTO nota_fiscal(numero,serie,chave,data_envio,email_nf) VALUES(?,?,?,NOW(),?)";
 		String sqlPedido = "UPDATE pedido SET numero_nf = ? WHERE numero = ?";
-		conexao.setAutoCommit(false);
-		stmt = conexao.prepareStatement(sqlNf);
-		PreparedStatement stmt2 = conexao.prepareStatement(sqlPedido);
+		ConnectionFactory.getConnection().setAutoCommit(false);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sqlNf);
+		PreparedStatement stmt2 = ConnectionFactory.getConnection().prepareStatement(sqlPedido);
 		stmt.setString(1, pedido.getNotaFiscal().getNum());
 		stmt.setString(2, pedido.getNotaFiscal().getSerie());
 		stmt.setString(3,pedido.getNotaFiscal().getChave());
@@ -209,14 +205,14 @@ public class PedidoDao {
 		stmt2.setString(2, pedido.getPedidoInterno());
 		stmt.execute();
 		stmt2.execute();
-		conexao.commit();
+		ConnectionFactory.getConnection().commit();
 		stmt.close();
 		stmt2.close();
 	}
 	
 	public void atualizaSat(Pedido pedido) throws SQLException {
 		String sql = "UPDATE pedido SET data_envio_satisf = NOW() WHERE numero = ?";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		stmt.setString(1, pedido.getPedidoInterno());
 		stmt.execute();
 		stmt.close();
@@ -224,7 +220,7 @@ public class PedidoDao {
 	
 	public void pontuar(Satisfacao satisfacao) throws SQLException{
 		String sql = "UPDATE satisfacao SET data_resposta = NOW(), quest1 = ?, quest2 = ?, quest3 = ?, comentarios = ? WHERE id = ?";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		stmt.setInt(1, satisfacao.getQuestoes()[0]);
 		stmt.setInt(2, satisfacao.getQuestoes()[1]);
 		stmt.setInt(3, satisfacao.getQuestoes()[2]);

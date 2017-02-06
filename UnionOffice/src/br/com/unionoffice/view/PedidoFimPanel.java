@@ -46,10 +46,8 @@ public class PedidoFimPanel extends JPanel {
 	JFormattedTextField tfBuscar;
 	JButton btFiltrar, btEnviaNF, btSatisf;
 	JTextField tfEmailNf, tfEmailSat;
-	JLabel lbBuscar, lbEmailRecebimento, lbContatoRecebimento,
-			lbDataEnvioRecebimento, lbDataEnvioNF, lbEmailNF, lbEmailSat,
-			lbDataEnvioSat, lbPedido, lbIconeRec, lbIconeNf, lbIconeSat,
-			lbDataRespSat, lbSatisfacao;
+	JLabel lbBuscar, lbEmailRecebimento, lbContatoRecebimento, lbDataEnvioRecebimento, lbDataEnvioNF, lbEmailNF,
+			lbEmailSat, lbDataEnvioSat, lbPedido, lbIconeRec, lbIconeNf, lbIconeSat, lbDataRespSat, lbSatisfacao;
 	List<Pedido> pedidos;
 	JTable tbPedidos;
 	JScrollPane pnPedidos;
@@ -62,12 +60,10 @@ public class PedidoFimPanel extends JPanel {
 	JFileChooser fcDialog;
 
 	public PedidoFimPanel() {
-		try {
-			daoPedido = new PedidoDao();
-			daoSatisfacao = new SatisfacaoDao();
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(PedidoFimPanel.this, e.getMessage());
-		}
+
+		daoPedido = new PedidoDao();
+		daoSatisfacao = new SatisfacaoDao();
+
 		inicializarComponentes();
 		definirEventos();
 	}
@@ -79,8 +75,7 @@ public class PedidoFimPanel extends JPanel {
 		// fcDialog
 		fcDialog = new JFileChooser();
 		fcDialog.setCurrentDirectory(new File("P:\\NFE"));
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Arquivo XML", "xml");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Arquivo XML", "xml");
 		fcDialog.setFileFilter(filter);
 		fcDialog.setFileFilter(fcDialog.getChoosableFileFilters()[1]);
 		fcDialog.setMultiSelectionEnabled(false);
@@ -122,6 +117,7 @@ public class PedidoFimPanel extends JPanel {
 		try {
 			criarTabela(daoPedido.listarNaoFaturados());
 		} catch (Exception e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(PedidoFimPanel.this, e.getMessage());
 		}
 
@@ -138,8 +134,7 @@ public class PedidoFimPanel extends JPanel {
 
 		// pnRecebimento
 		pnRecebimento = new JPanel();
-		pnRecebimento.setBorder(BorderFactory
-				.createTitledBorder("Recebimento do Pedido"));
+		pnRecebimento.setBorder(BorderFactory.createTitledBorder("Recebimento do Pedido"));
 		pnRecebimento.setLocation(510, 80);
 		pnRecebimento.setSize(320, 150);
 
@@ -211,8 +206,7 @@ public class PedidoFimPanel extends JPanel {
 
 		// pnSatisf
 		pnSatisf = new JPanel();
-		pnSatisf.setBorder(BorderFactory
-				.createTitledBorder("Satisfação do cliente"));
+		pnSatisf.setBorder(BorderFactory.createTitledBorder("Satisfação do cliente"));
 		pnSatisf.setLocation(510, 400);
 		pnSatisf.setSize(320, 195);
 
@@ -314,8 +308,7 @@ public class PedidoFimPanel extends JPanel {
 						tfBuscar.commitEdit();
 						btFiltrar.doClick();
 					} catch (ParseException e1) {
-						JOptionPane.showMessageDialog(PedidoFimPanel.this,
-								"Digite um valor para buscar");
+						JOptionPane.showMessageDialog(PedidoFimPanel.this, "Digite um valor para buscar");
 					}
 
 				}
@@ -328,8 +321,7 @@ public class PedidoFimPanel extends JPanel {
 				try {
 					criarTabela(pedidos = daoPedido.buscarNumero(parametro));
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(PedidoFimPanel.this,
-							e.getMessage());
+					JOptionPane.showMessageDialog(PedidoFimPanel.this, e.getMessage());
 				}
 			}
 		});
@@ -350,25 +342,20 @@ public class PedidoFimPanel extends JPanel {
 					break;
 				}
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(PedidoFimPanel.this,
-						e.getMessage());
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(PedidoFimPanel.this, e.getMessage());
 			}
 			limpar();
 		});
 
-		tbPedidos
-				.getSelectionModel()
-				.addListSelectionListener(
-						event -> {							
-							if (tbPedidos.getSelectedRow() >= 0) {
-								PedidoFimTableModel model = (PedidoFimTableModel) tbPedidos
-										.getModel();
-								pedido = model.getPedido(tbPedidos
-										.getSelectedRow());								
-								exibirInformacoes();
-							}
+		tbPedidos.getSelectionModel().addListSelectionListener(event -> {
+			if (tbPedidos.getSelectedRow() >= 0) {
+				PedidoFimTableModel model = (PedidoFimTableModel) tbPedidos.getModel();
+				pedido = model.getPedido(tbPedidos.getSelectedRow());
+				exibirInformacoes();
+			}
 
-						});
+		});
 
 		btEnviaNF.addActionListener(event -> {
 			if (pedido != null) {
@@ -387,33 +374,30 @@ public class PedidoFimPanel extends JPanel {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (tbPedidos.getSelectedRow() >= 0 && e.getKeyCode() == 127) {
-					int opcao = JOptionPane.showConfirmDialog(
-							PedidoFimPanel.this, "Deseja excluir o pedido "
-									+ pedido.getPedidoInterno() + "?",
-							"Confirmar exclusão", JOptionPane.YES_NO_OPTION);
+					int opcao = JOptionPane.showConfirmDialog(PedidoFimPanel.this,
+							"Deseja excluir o pedido " + pedido.getPedidoInterno() + "?", "Confirmar exclusão",
+							JOptionPane.YES_NO_OPTION);
 					if (opcao == 0) {
 						try {
 							daoPedido.excluir(pedido);
 							cbFiltrar.setSelectedIndex(0);
 						} catch (Exception e2) {
-							JOptionPane.showMessageDialog(
-									PedidoFimPanel.this,
-									"Erro ao excluir o pedido: "
-											+ e2.getMessage());
+							JOptionPane.showMessageDialog(PedidoFimPanel.this,
+									"Erro ao excluir o pedido: " + e2.getMessage());
 						}
 					}
 				}
 			}
 		});
 
-		btSatisf.addActionListener(event -> {			
+		btSatisf.addActionListener(event -> {
 			if (sat == null) {
 				// new Thread() {
 				// public void run() {
 				try {
-					if(pedido.getNotaFiscal() == null){
+					if (pedido.getNotaFiscal() == null) {
 						NotaFiscal nota = new NotaFiscal();
-						nota.setNumero("1",JOptionPane.showInputDialog("Informe o número da NF"));						
+						nota.setNumero("1", JOptionPane.showInputDialog("Informe o número da NF"));
 						pedido.setNotaFiscal(nota);
 						daoPedido.gravarNf(pedido);
 					}
@@ -432,12 +416,10 @@ public class PedidoFimPanel extends JPanel {
 					alteraIcone(lbIconeSat, true);
 					tfEmailSat.setEditable(false);
 					tfEmailSat.setText(sat.getEmail());
-					lbDataEnvioSat.setText("Enviado: "
-							+ new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
-									.format(Calendar.getInstance().getTime()));
+					lbDataEnvioSat.setText("Enviado: " + new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
+							.format(Calendar.getInstance().getTime()));
 				} catch (Exception erro) {
-					JOptionPane.showMessageDialog(PedidoFimPanel.this, "Erro: "
-							+ erro.getMessage());
+					JOptionPane.showMessageDialog(PedidoFimPanel.this, "Erro: " + erro.getMessage());
 					erro.printStackTrace();
 				}
 				// };
@@ -445,9 +427,9 @@ public class PedidoFimPanel extends JPanel {
 			} else {
 				new PesquisaFrame(pedido, sat);
 				if (sat.getQuestoes() != null) {
-					calculaSatisfacao(sat.getQuestoes());	
+					calculaSatisfacao(sat.getQuestoes());
 				}
-				
+
 			}
 		});
 
@@ -456,14 +438,11 @@ public class PedidoFimPanel extends JPanel {
 	private void exibirInformacoes() {
 		sat = null;
 		if (pedido != null) {
-			lbPedido.setText(pedido.getPedidoInterno() + " - "
-					+ pedido.getCliente());
+			lbPedido.setText(pedido.getPedidoInterno() + " - " + pedido.getCliente());
 			if (pedido.getDataEnvioReceb() != null) {
-				lbDataEnvioRecebimento.setText("Enviado: "
-						+ new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
-								.format(pedido.getDataEnvioReceb().getTime()));
-				lbEmailRecebimento
-						.setText("Email: " + pedido.getEmailContato());
+				lbDataEnvioRecebimento.setText("Enviado: " + new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
+						.format(pedido.getDataEnvioReceb().getTime()));
+				lbEmailRecebimento.setText("Email: " + pedido.getEmailContato());
 				lbContatoRecebimento.setText("Contato: " + pedido.getContato());
 				alteraIcone(lbIconeRec, true);
 			} else {
@@ -471,10 +450,8 @@ public class PedidoFimPanel extends JPanel {
 			}
 
 			if (pedido.getNotaFiscal() != null && pedido.getNotaFiscal().getChave() != null) {
-				lbDataEnvioNF.setText("Enviado: "
-						+ new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
-								.format(pedido.getNotaFiscal().getDataEnvio()
-									.getTime()));
+				lbDataEnvioNF.setText("Enviado: " + new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
+						.format(pedido.getNotaFiscal().getDataEnvio().getTime()));
 				tfEmailNf.setText(pedido.getNotaFiscal().getEmail());
 				alteraIcone(lbIconeNf, true);
 				btEnviaNF.setEnabled(false);
@@ -494,10 +471,8 @@ public class PedidoFimPanel extends JPanel {
 					sat = daoSatisfacao.buscar(pedido.getNotaFiscal().getNum());
 					tfEmailSat.setText(sat.getEmail());
 					tfEmailSat.setEditable(false);
-					lbDataEnvioSat.setText("Enviado: "
-							+ new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
-									.format(pedido.getDataEnvioSatisf()
-											.getTime()));
+					lbDataEnvioSat.setText("Enviado: " + new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
+							.format(pedido.getDataEnvioSatisf().getTime()));
 					alteraIcone(lbIconeSat, true);
 					if (sat.getDataResposta() == null) {
 						btSatisf.setText("Pontuar");
@@ -507,16 +482,13 @@ public class PedidoFimPanel extends JPanel {
 						lbDataRespSat.setText("Pontuado:");
 					} else {
 						btSatisf.setText("Respostas");
-						lbDataRespSat.setText("Pontuado: "
-								+ new SimpleDateFormat(
-										"dd/MM/yyyy 'às' HH:mm:ss").format(sat
-										.getDataResposta().getTime()));
+						lbDataRespSat.setText("Pontuado: " + new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm:ss")
+								.format(sat.getDataResposta().getTime()));
 						calculaSatisfacao(sat.getQuestoes());
 					}
 				} catch (SQLException erro) {
 
-					JOptionPane.showMessageDialog(this,
-							"Erro: " + erro.getMessage());
+					JOptionPane.showMessageDialog(this, "Erro: " + erro.getMessage());
 				}
 			} else {
 				lbDataEnvioSat.setText("Enviado:");
@@ -533,11 +505,9 @@ public class PedidoFimPanel extends JPanel {
 
 	private void alteraIcone(JLabel label, boolean opcao) {
 		if (opcao) {
-			label.setIcon(new ImageIcon(getClass().getResource(
-					"/imagens/icone_ok.png")));
+			label.setIcon(new ImageIcon(getClass().getResource("/imagens/icone_ok.png")));
 		} else {
-			label.setIcon(new ImageIcon(getClass().getResource(
-					"/imagens/icone_nao.png")));
+			label.setIcon(new ImageIcon(getClass().getResource("/imagens/icone_nao.png")));
 		}
 	}
 

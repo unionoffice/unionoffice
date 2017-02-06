@@ -14,17 +14,12 @@ import br.com.unionoffice.model.Pedido;
 import br.com.unionoffice.model.Satisfacao;
 
 public class SatisfacaoDao {
-	private Connection conexao;
 	PreparedStatement stmt;
-
-	public SatisfacaoDao() throws SQLException {
-		conexao = ConnectionFactory.getConnection();
-	}
 
 	public Satisfacao buscar(String numeroNf) throws SQLException {
 		Satisfacao sat = null;
 		String sql = "SELECT * FROM satisfacao WHERE numero_nf = ?";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		stmt.setString(1, numeroNf);
 		ResultSet rs = stmt.executeQuery();
 		if (rs.next()) {
@@ -52,7 +47,7 @@ public class SatisfacaoDao {
 	
 	public void criar(Satisfacao sat, String nf) throws SQLException{
 		String sql = "INSERT INTO satisfacao(numero_nf, email, data_envio) VALUES(?,?,NOW())";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		stmt.setString(1, nf);
 		stmt.setString(2,sat.getEmail());
 		stmt.execute();
@@ -61,7 +56,7 @@ public class SatisfacaoDao {
 	
 	public void pontuar(Satisfacao sat) throws SQLException{
 		String sql = "UPDATE satisfacao SET data_resposta = NOW(), quest1 = ?, quest2 = ?, quest 3 = ?, comentarios = ? WHERE id = ?";
-		stmt = conexao.prepareStatement(sql);
+		stmt = ConnectionFactory.getConnection().prepareStatement(sql);
 		stmt.setInt(1, sat.getQuestoes()[0]);
 		stmt.setInt(2, sat.getQuestoes()[1]);
 		stmt.setInt(3, sat.getQuestoes()[2]);
