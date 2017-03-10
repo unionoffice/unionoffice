@@ -74,17 +74,17 @@ public class EmailNfe {
 	public static String criaMensagem(NotaFiscal nota, boolean deposito) {
 		String retorno = new String();
 		retorno = "<html><body>";
-		retorno += "<font size=\"4\" face=\"Arial\" color=\"#ba1419\"><b>Prezado cliente,<br> <br></b>";
+		retorno += "<font size=\"4\" face=\"Arial\" color=\"#808080\"><b>Prezado cliente,<br> <br></b>";
 		retorno += "Esta mensagem refere-se a Nota Fiscal Eletrônica Nacional:<br><br>";
-		retorno += "<b>Série / Número: <font color=\"#2f3699\">"
+		retorno += "<b>Série / Número: <font color=\"#ba1419\">"
 				+ nota.getNumero() + "</b><br>";
-		retorno += "<b>Nome / Razão Social: <font color=\"#2f3699\">"
+		retorno += "<b>Nome / Razão Social: <font color=\"#ba1419\">"
 				+ nota.getDestinatario() + "</b><br>";
-		retorno += "<b>CPF / CNPJ: <font color=\"#2f3699\">"
+		retorno += "<b>CPF / CNPJ: <font color=\"#ba1419\">"
 				+ nota.getDocumento() + "</b><br><br>";
 		retorno += "Para verificar a autorização da SEFAZ referente à nota acima mencionada, acesse o endereço:<br>";
 		retorno += "<a href=\"http://www.nfe.fazenda.gov.br/portal/consulta.aspx?tipoConsulta=completa&tipoConteudo=Xb\"><font color=\"#2f3699\">http://www.nfe.fazenda.gov.br/portal/consulta.aspx?tipoConsulta=completa&tipoConteudo=Xb</a><br><br>";
-		retorno += "<b>Chave de acesso: <font color=\"#2f3699\">"
+		retorno += "<b>Chave de acesso: <font color=\"#ba1419\">"
 				+ nota.getChave() + "</b><br><br>";
 		retorno += "Segue anexo o Danfe e o arquivo XML da referida nota, que pode ser acessado com o visualizador da NFe, obtido no seguinte endereço:<br>";
 		retorno += "<a href =\"http://www.nfe.fazenda.gov.br/portal/download.aspx?tipoConteudo=s/eYl\"><font color=\"#2f3699\">http://www.nfe.fazenda.gov.br/portal/download.aspx?tipoConteudo=s/eYl</a><br><br>";

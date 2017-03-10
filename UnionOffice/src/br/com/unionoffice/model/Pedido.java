@@ -105,7 +105,7 @@ public class Pedido {
 	public String getMensagem() {
 		if (mensagem == null) {
 			mensagem = "<html><body>";
-			mensagem += "<font size=\"4\" face=\"Arial\" color=\"#ba1419\"><b>Recebimento do Pedido:<br> <br></b>";
+			mensagem += "<font size=\"4\" face=\"Arial\" color=\"#808080\"><b>Recebimento do Pedido:<br> <br></b>";
 			mensagem += "À <b>" + this.getCliente() + "</b><br><br>";
 			Calendar calendar = Calendar.getInstance();
 			mensagem += "<b>"
@@ -145,7 +145,7 @@ public class Pedido {
 
 	public String getMsgSatisfacao() {
 		String mensagem = "<html><body>";
-		mensagem += "<font size=\"4\" face=\"Arial\" color=\"#ba1419\">";
+		mensagem += "<font size=\"4\" face=\"Arial\" color=\"#808080\">";
 		mensagem += "À <b>" + this.getCliente() + "</b><br><br>";
 		Calendar calendar = Calendar.getInstance();
 		mensagem += "<b>"

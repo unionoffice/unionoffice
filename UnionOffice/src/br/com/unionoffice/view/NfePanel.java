@@ -28,6 +28,7 @@ import org.apache.commons.mail.EmailException;
 import org.xml.sax.SAXException;
 
 import br.com.unionoffice.dao.PedidoDao;
+import br.com.unionoffice.email.EmailConfig;
 import br.com.unionoffice.email.EmailNfe;
 import br.com.unionoffice.model.NotaFiscal;
 import br.com.unionoffice.model.Pedido;
@@ -119,6 +120,7 @@ public class NfePanel extends JPanel {
 		tfCopiaOculta = new JTextField();
 		tfCopiaOculta.setLocation(80, 65);
 		tfCopiaOculta.setSize(350, 25);
+		tfCopiaOculta.setText(EmailConfig.ConfigVendas.USERNAME);
 
 		// chkDeposito
 		chkDeposito = new JCheckBox("Depósito em C/C");
