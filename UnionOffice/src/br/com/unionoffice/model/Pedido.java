@@ -136,7 +136,7 @@ public class Pedido {
 			mensagem += "2 - Horário: <br><br>";
 			mensagem += "3 - Restrições:<br><br>";
 			mensagem += "4 - Observações:<br><br>";
-			mensagem += "Qualquer discordância dos dados acima, favor entrar em contato através do telefone: (11) 5521-1664 ou e-mail: <a href=\"mailto:admvendas@unionoffice.com.br\"><font color=\"#2f3699\">admvendas@unionoffice.com.br</font></a><br><br>";
+			mensagem += "Qualquer discordância dos dados acima, favor entrar em contato através do telefone: (11) 5521-1664 ou e-mail: <a href=\"mailto:sac@unionoffice.com.br\"><font color=\"#2f3699\">sac@unionoffice.com.br</font></a><br><br>";
 			mensagem += "Somos gratos por vossa atenção";
 			mensagem += "</body></html>";
 		}
